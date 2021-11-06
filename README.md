@@ -53,3 +53,10 @@ Congratulations! You have successfully added the Skyblock Secret Mod ExtensionsA
 - /sm - Command to access config gui.
 - /smhud - Command to change positions of hud elements.
 - /rp - Command to start the reparty hook.
+
+# Open Sourced
+Skyblock Secret Mod is open source and because of this it uses code from open source programs! Below is a list of open source programs used to develop **Skyblock Secret Mod**!
+
+[List of Open Source Programs](https://github.com/Nat3z/SkyblockSecretMod/blob/main/OPEN_SOURCE_SOFTWARE.md)
+
+This mod is protected by the [**MIT License**](https://github.com/Nat3z/SkyblockSecretMod/blob/main/LICENSE). All rights reserved.
