@@ -3,7 +3,10 @@ package com.natia.secretmod.mixins;
 import com.natia.secretmod.SecretMod;
 import com.natia.secretmod.utils.JarFileReader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfiguration;
 import net.minecraft.crash.CrashReport;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,28 +26,22 @@ import static com.natia.secretmod.utils.WebUtils.fetch;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    @Shadow @Final public File mcDataDir;
 
     private Method replaceMethod;
-    private boolean updateMod = false;
-
-    private Object[] args;
     private Object instance;
-    private String downloadURL;
-    private File finalModsFolder;
-    private String version;
 
-    @Inject(method = "startGame", at = @At("HEAD"))
-    public void startGame(CallbackInfo ci) {
-        File viciousFolder = new File(mcDataDir.getAbsolutePath() + "\\vicious\\");
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void init(GameConfiguration gameConfig, CallbackInfo ci) {
+        File viciousFolder = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\vicious\\");
         if (!viciousFolder.exists()) {
             viciousFolder.mkdir();
         }
-        File viciousUpdateCycle = new File(mcDataDir.getAbsolutePath() + "\\vicious\\updater.jar");
+        File viciousUpdateCycle = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\vicious\\updater.jar");
         /* if not downloaded, download vicious updater */
         fetch("https://api.github.com/repos/Nat3z/ModAssistant/releases/latest", res -> {
             String downloadURL = res.asJson().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
             if (!viciousUpdateCycle.exists()) {
+                System.out.println("Mod Assistant is not installed. Now installing Mod Assistant.");
                 try {
                     downloader(viciousFolder, downloadURL, "updater.jar");
                 } catch (IOException e) {
@@ -54,20 +51,19 @@ public abstract class MixinMinecraft {
             }
         });
         /* check for updates & auto update */
-
         fetch("https://secretmod-hypixel.herokuapp.com/latest", res -> {
             if (!SecretMod.VERSION.equals(res.asString())) {
                 /* update that mod! */
                 System.out.println("Adding update to Skyblock Secret Mod...");
-                File modsFolder = new File(mcDataDir.getAbsolutePath() + "\\mods\\");
-                File subMods = new File(mcDataDir.getAbsolutePath() + "\\mods\\1.8.9\\");
+                File modsFolder = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\");
+                File subMods = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\1.8.9\\");
 
                 if (subMods.exists()) {
                     modsFolder = subMods;
                 }
 
                 File finalModsFolder = modsFolder;
-                fetch("https://api.github.com/repos/Nat3z/SkyblockMod/releases/latest", res1 -> {
+                fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res1 -> {
                     String downloadURL = res1.asJson().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
                     try {
                         List<Class> classes = JarFileReader.getClassesFromJarFile(viciousUpdateCycle);
@@ -77,15 +73,12 @@ public abstract class MixinMinecraft {
                                 replaceMethod = c.getDeclaredMethod("downloadReplaceWindow", String.class, File.class, String.class, String.class);
                                 System.out.println(replaceMethod.getName());
                                 replaceMethod.setAccessible(true);
-                                updateMod = true;
                                 instance = c.newInstance();
-                                this.downloadURL = downloadURL;
-                                this.finalModsFolder = finalModsFolder;
-                                this.version = res.asString();
 
-                                System.out.println("Prepared update for Skyblock Secret Mod. Now waiting for Minecraft applet to close...");
+                                System.out.println("Prepared update for Skyblock Secret Mod.");
                                 System.out.println("Attempting to update Vicious Mod.");
                                 replaceMethod.invoke(instance, downloadURL, finalModsFolder, "Skyblock.Secret.Mod-" + res.asString() + ".jar", "Skyblock.Secret.Mod");
+                                FMLCommonHandler.instance().exitJava(0, false);
                                 break;
                             }
                         }

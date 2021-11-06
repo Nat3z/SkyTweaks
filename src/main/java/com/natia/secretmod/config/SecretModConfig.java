@@ -50,16 +50,6 @@ public class SecretModConfig implements ViciousConfig {
     public static boolean itemPickupLogs = false;
 
     @AddConfig(
-            name = "New Bank HUD",
-            description = "Enables the new bank gui. This is UAYOR because it clicks gui elements for you.",
-            category = "General",
-            subCategory = "Quality of Life",
-            type = ConfigType.TOGGLE,
-            UAYOR = true
-    )
-    public static boolean bankGui = false;
-
-    @AddConfig(
             name = "Minion Analyzer",
             description = "Analyzes minion contents and calculates the amount of coins in the minion.",
             category = "General",
@@ -68,28 +58,6 @@ public class SecretModConfig implements ViciousConfig {
             UAYOR = false
     )
     public static boolean minionAnalyzer = false;
-
-    /* General - Discord */
-
-    @AddConfig(
-            name = "Discord Webhook",
-            description = "The Discord Webhook used to send messages in a Discord server.",
-            category = "General",
-            subCategory = "Discord",
-            type = ConfigType.INPUT_FIELD,
-            UAYOR = false
-    )
-    public static String discordWebhookURL = "";
-
-    @AddConfig(
-            name = "Announce Dungeon Drops",
-            description = "Notifies in a Discord Server about dungeon drops.",
-            category = "General",
-            subCategory = "Discord",
-            type = ConfigType.TOGGLE,
-            UAYOR = false
-    )
-    public static boolean announceDungeonDrops = false;
 
     /* Dungeons */
 
@@ -115,16 +83,6 @@ public class SecretModConfig implements ViciousConfig {
     public static String autojoindungeonFloor = "F1";
 
     @AddConfig(
-            name = "Join dungeon once ready",
-            description = "Once all players are ready, start the dungeon automatically.",
-            category = "Dungeons",
-            subCategory = "Dungeons",
-            type = ConfigType.TOGGLE,
-            UAYOR = true
-    )
-    public static boolean autojoindungeon = false;
-
-    @AddConfig(
             name = "Spirit/Bonzo Timers",
             description = "Displays a timer which shows how long the cooldown for the spirit/bonzo mask is.",
             category = "Dungeons",
@@ -133,6 +91,16 @@ public class SecretModConfig implements ViciousConfig {
             UAYOR = false
     )
     public static boolean maskTimers = true;
+
+    @AddConfig(
+            name = "Copy Fails/Deaths",
+            description = "Automatcally copies dungeon fails AND dungeon deaths.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean copyFails = true;
 
     @AddConfig(
             name = "Reparty Command",

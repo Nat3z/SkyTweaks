@@ -30,7 +30,7 @@ public class GuiHook {
             IInventory inventory = container.getLowerChestInventory();
 
             /* Override the gui to a SkyblockGui using the SkyblockGui class */
-            if (inventory.getName().contains("Bank") && !inventory.getName().endsWith("Account") && SecretModConfig.bankGui) {
+            if (inventory.getName().contains("Bank") && !inventory.getName().endsWith("Account")) {
                 PersonalBankAccount.render();
                 event.setCanceled(true);
             }
@@ -52,7 +52,7 @@ public class GuiHook {
             IInventory inventory = container.getLowerChestInventory();
 
             /* Override the gui to a SkyblockGui using the SkyblockGui class */
-            if (inventory.getName().contains("Bank") && !inventory.getName().endsWith("Account") && SecretModConfig.bankGui) {
+            if (inventory.getName().contains("Bank") && !inventory.getName().endsWith("Account")) {
                 PersonalBankAccount.mouseEvent();
                 event.setCanceled(true);
             }

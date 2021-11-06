@@ -13,6 +13,7 @@ import com.natia.secretmod.features.RepartyHook;
 import com.natia.secretmod.features.bazaar.BazaarHook;
 import com.natia.secretmod.features.bazaar.Notifier;
 import com.natia.secretmod.features.dungeons.BonzoSpiritHook;
+import com.natia.secretmod.features.dungeons.CopyFails;
 import com.natia.secretmod.networking.ColorText;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 )
 public class SecretMod {
     public static final String MODID = "secret-mod-v2";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.0.1";
 
     public static CoreExtension configHandler;
     @Mod.Instance(MODID)
@@ -48,10 +49,12 @@ public class SecretMod {
     {
         MinecraftForge.EVENT_BUS.register(new TickedEvent());
         /* Bazaar Notifier */
-        MinecraftForge.EVENT_BUS.register(new BazaarHook());
-        MinecraftForge.EVENT_BUS.register(new Notifier());
+        //MinecraftForge.EVENT_BUS.register(new BazaarHook());
+        //MinecraftForge.EVENT_BUS.register(new Notifier());
         /* Mask Timers */
         MinecraftForge.EVENT_BUS.register(new BonzoSpiritHook());
+        MinecraftForge.EVENT_BUS.register(new CopyFails());
+
         /* Quality of Life */
         MinecraftForge.EVENT_BUS.register(new MinionAnalyzer());
         /* Cosmetics */
