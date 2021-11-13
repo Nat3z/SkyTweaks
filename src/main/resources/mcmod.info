@@ -3,7 +3,7 @@
     "modid": "secret-mod-v2",
     "name": "Skyblock Secret Mod",
     "description": "A new Hypixel Skyblock Quality of Life mod. Implementing new features and cross-mod networking. Not only that, implementation of the &cExtensions &rAPI allows you to add extensions into the mod!",
-    "version": "REL-1.0",
+    "version": "REL-1.0.1",
     "mcversion": "1.8.9",
     "url": "nat3z.github.io",
     "updateUrl": "",

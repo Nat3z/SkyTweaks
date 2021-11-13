@@ -1,5 +1,6 @@
 package com.natia.secretmod.commands;
 
+import com.natia.secretmod.SecretUtils;
 import com.natia.secretmod.config.SecretModConfig;
 import com.natia.secretmod.core.TickedEvent;
 import com.natia.secretmod.features.RepartyHook;
@@ -39,7 +40,7 @@ public class RepartyCommand extends CommandBase {
         return "/rp";
     }
 
-    Minecraft mc = Minecraft.getMinecraft();
+    private Minecraft mc = Minecraft.getMinecraft();
     /**
      * Callback when the command is invoked
      *
@@ -53,22 +54,31 @@ public class RepartyCommand extends CommandBase {
             RepartyHook.getInstance().cancelChats = true;
             mc.thePlayer.sendChatMessage("/p list");
             AsyncAwait.start(() -> {
+                mc.thePlayer.sendChatMessage("/p disband");
+
                 AsyncAwait.start(() -> {
-                    mc.thePlayer.sendChatMessage("/p disband");
-
-                    AsyncAwait.start(() -> {
-                        String command = "/p invite";
-                        for (String member : RepartyHook.getInstance().partyMembers) {
-                            command += " " + member;
+                    String command = "/p invite";
+                    System.out.println("Party Members:");
+                    for (String member : RepartyHook.getInstance().partyMembers) {
+                        if (!member.isEmpty()) {
+                            System.out.println("- " + member);
+                            command += " " + member.replaceAll(" ", "");
                         }
-                        System.out.println(command);
+                    }
 
-                        mc.thePlayer.sendChatMessage(command);
-                    }, 980);
-                }, 500);
-            }, 750);
+                    System.out.println(command);
+                    if (RepartyHook.getInstance().partyMembers.isEmpty() && RepartyHook.getInstance().cancelChats) {
+                        SecretUtils.sendMessage("Reparty timed out.");
+                        RepartyHook.getInstance().cancelChats = false;
+                        return;
+                    }
+
+                    RepartyHook.getInstance().partyMembers.clear();
+                    mc.thePlayer.sendChatMessage(command);
+                    }, 1890);
+            }, 2900);
         } else {
-            mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[Secret Mod] " + EnumChatFormatting.GRAY + "The feature 'Reparty Command' is not enabled."));
+            SecretUtils.sendMessage("The feature 'Reparty Command' is not enabled.");
         }
 
     }

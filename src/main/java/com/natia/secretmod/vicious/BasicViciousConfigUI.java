@@ -1,6 +1,7 @@
 package com.natia.secretmod.vicious;
 
 import com.natia.secretmod.SecretMod;
+import com.natia.secretmod.config.SecretModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,16 +55,6 @@ public class BasicViciousConfigUI extends GuiScreen {
 
         double heightlen = 0.2;
         int modnum = -1;
-
-        int mo = 101;
-        int xLine = -60;
-        for (String section : sections) {
-            mo++;
-            xLine += 80;
-            MoveableButtons moveableButtons = new MoveableButtons(mo, xLine, 20, 60, 20, section, false);
-            buttonList.add(moveableButtons);
-            maxSectionOffset = mo;
-        }
 
         Map<String, List<Object>> categoryList = new LinkedHashMap<>();
         for (ConfigItem items : configItems) {
@@ -139,8 +130,18 @@ public class BasicViciousConfigUI extends GuiScreen {
                 cfgButtons.add(obj);
             }
             categories.add(new Category(subCategory, configs, categoryOffset[0]));
-
         });
+
+        /* categories */
+        int mo = 101;
+        int xLine = -60;
+        for (String section : sections) {
+            mo++;
+            xLine += 80;
+            MoveableButtons moveableButtons = new MoveableButtons(mo, xLine, 20, 60, 20, section, false);
+            buttonList.add(moveableButtons);
+            maxSectionOffset = mo;
+        }
 
     }
     public void drawString(String text, int x, int y, int color, int scale) {
@@ -150,9 +151,12 @@ public class BasicViciousConfigUI extends GuiScreen {
         GlStateManager.popMatrix();
     }
     float scrollmount = 1.0f;
+    private int width = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
 
-    private int imageX = width / 2 - 30;
-    private int imageY = (int) (height * 0.3);
+    private int imageX = width / 2 - 20;
+    private int imageY = 80;
+
+    private int currentColor = 0;
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         try {
@@ -162,8 +166,16 @@ public class BasicViciousConfigUI extends GuiScreen {
                 int pickerWidth = COLOR_WHEEL_IMAGE.getWidth();
                 int pickerHeight = COLOR_WHEEL_IMAGE.getHeight();
 
+                buttonList.forEach(guiButton -> {
+                    guiButton.visible = false;
+                });
                 mc.getTextureManager().bindTexture(COLOR_WHEEL);
                 Gui.drawModalRectWithCustomSizedTexture(imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight);
+                drawCenteredString("Color Picker", (width / 2 + 3) / 2, (int) (height * 0.1) / 2, new Color(28, 209, 70).getRGB(), 2);
+                int currColorx = imageY + 15;
+                int currColorY = imageX / 2;
+                Gui.drawRect(currColorx, currColorY, currColorx + 20, currColorY + 20, currentColor);
+
                 super.drawScreen(mouseX, mouseY, partialTicks);
                 return;
             }
@@ -204,19 +216,19 @@ public class BasicViciousConfigUI extends GuiScreen {
                             if (configItems.get(id).getType() == ConfigType.HUD) continue;
 
                             if (configItems.get(id).getType() == ConfigType.COLOR_WHEEL) {
-                                this.drawString(configItems.get(id).getName(), x2 / 2 - 5, button.yPosition / 2, new Color((int) configItems.get(id).getValue()).getRGB(), 2);
-                                this.drawString(configItems.get(id).getDescription(), x2 / 2 + 40, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? new Color(255, 90, 41).getRGB() : Color.white.getRGB(), 1);
+                                this.drawString(configItems.get(id).getName(), x2 / 2, button.yPosition / 2, new Color((int) configItems.get(id).getValue()).getRGB(), 2);
+                                this.drawString(configItems.get(id).getDescription(), x2 + 10, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? new Color(255, 90, 41).getRGB() : Color.white.getRGB(), 1);
                             } else {
-                                this.drawString(configItems.get(id).getName(), x2 / 2 - 5, button.yPosition / 2, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : new Color(218, 159, 0).getRGB(), 2);
-                                this.drawString(configItems.get(id).getDescription(), x2 / 2 + 40, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? new Color(255, 90, 41).getRGB() : Color.white.getRGB(), 1);
+                                this.drawString(configItems.get(id).getName(), x2 / 2, button.yPosition / 2, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : new Color(218, 159, 0).getRGB(), 2);
+                                this.drawString(configItems.get(id).getDescription(), x2 + 10, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? new Color(255, 90, 41).getRGB() : Color.white.getRGB(), 1);
                             }
                         }
                     } else if (obj instanceof GuiTextField) {
                         ((GuiTextField) obj).drawTextBox();
                         GuiTextField button = (GuiTextField) obj;
                         if (button.getVisible()) {
-                            this.drawString(configItems.get(id).getName(), x2 / 2 - 5, button.yPosition / 2, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : new Color(218, 159, 0).getRGB(), 2);
-                            this.drawString(configItems.get(id).getDescription(), x2 / 2 + 40, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : Color.white.getRGB(), 1);
+                            this.drawString(configItems.get(id).getName(), x2 / 2, button.yPosition / 2, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : new Color(218, 159, 0).getRGB(), 2);
+                            this.drawString(configItems.get(id).getDescription(), x2 + 10, button.yPosition + 20, configItems.get(id).shouldUseAtOwnRisk() ? Color.red.getRGB() : Color.white.getRGB(), 1);
                         }
                     }
                 }
@@ -300,6 +312,7 @@ public class BasicViciousConfigUI extends GuiScreen {
 
         if (button instanceof Button && ((Button) button).textureResource == color_switch) {
             hoverid = button.id;
+            currentColor = (int) configItems.get(button.id).getValue();
             showColorWheel = true;
         }
         else if (button instanceof Button) {
@@ -386,7 +399,9 @@ public class BasicViciousConfigUI extends GuiScreen {
                 // If the mouse is over the color picker.
                 if (xPixel > 0 && xPixel < COLOR_WHEEL_IMAGE.getWidth() &&
                         yPixel > 0 && yPixel < COLOR_WHEEL_IMAGE.getHeight()) {
-
+                    buttonList.forEach(guiButton -> {
+                        guiButton.visible = true;
+                    });
                     // Get the color of the clicked pixel.
                     Color selectedColor = new Color(COLOR_WHEEL_IMAGE.getRGB(xPixel, yPixel), true);
                     int id = -1;

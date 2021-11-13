@@ -1,16 +1,10 @@
-package com.natia.secretmod.features;
+package com.natia.secretmod.features.dungeons;
 
 import com.natia.secretmod.config.SecretModConfig;
 import com.natia.secretmod.vicious.BaseViciousHUDEditor;
-import com.natia.secretmod.vicious.BasicViciousConfigUI;
 import com.natia.secretmod.vicious.HudElement;
-import io.netty.util.internal.StringUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
@@ -23,7 +17,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AreYouReady {

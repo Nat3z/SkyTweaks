@@ -35,7 +35,7 @@ public class TickedEvent {
 
         if (smGui) {
             smGui = false;
-            Minecraft.getMinecraft().displayGuiScreen(new BasicViciousConfigUI(SecretMod.configHandler, SecretMod.configHandler.getConfigItems(), "General", new String[]{"General", "Dungeons"}));
+            Minecraft.getMinecraft().displayGuiScreen(new BasicViciousConfigUI(SecretMod.configHandler, SecretMod.configHandler.getConfigItems(), "General", new String[]{"General", "Dungeons", "Slayers"}));
             return;
         } else if (smHUD) {
             smHUD = false;

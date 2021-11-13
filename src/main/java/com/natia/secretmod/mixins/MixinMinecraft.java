@@ -2,6 +2,7 @@ package com.natia.secretmod.mixins;
 
 import com.natia.secretmod.SecretMod;
 import com.natia.secretmod.utils.JarFileReader;
+import com.natia.secretmod.utils.ModAssistantHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfiguration;
 import net.minecraft.crash.CrashReport;
@@ -50,48 +51,29 @@ public abstract class MixinMinecraft {
                 }
             }
         });
+        File modsFolder = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\");
+        File subMods = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\1.8.9\\");
+
+        if (subMods.exists()) {
+            modsFolder = subMods;
+        }
+        ModAssistantHook.openLauncher(modsFolder);
         /* check for updates & auto update */
+        File finalModsFolder = modsFolder;
         fetch("https://secretmod-hypixel.herokuapp.com/latest", res -> {
             if (!SecretMod.VERSION.equals(res.asString())) {
                 /* update that mod! */
                 System.out.println("Adding update to Skyblock Secret Mod...");
-                File modsFolder = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\");
-                File subMods = new File(gameConfig.folderInfo.mcDataDir.getAbsolutePath() + "\\mods\\1.8.9\\");
-
-                if (subMods.exists()) {
-                    modsFolder = subMods;
-                }
-
-                File finalModsFolder = modsFolder;
                 fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res1 -> {
                     String downloadURL = res1.asJson().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
-                    try {
-                        List<Class> classes = JarFileReader.getClassesFromJarFile(viciousUpdateCycle);
-                        for (Class c : classes) {
-                            System.out.println(c.getName());
-                            if (c.getName().toLowerCase().contains("downloadreplace")) {
-                                replaceMethod = c.getDeclaredMethod("downloadReplaceWindow", String.class, File.class, String.class, String.class);
-                                System.out.println(replaceMethod.getName());
-                                replaceMethod.setAccessible(true);
-                                instance = c.newInstance();
-
-                                System.out.println("Prepared update for Skyblock Secret Mod.");
-                                System.out.println("Attempting to update Vicious Mod.");
-                                replaceMethod.invoke(instance, downloadURL, finalModsFolder, "Skyblock.Secret.Mod-" + res.asString() + ".jar", "Skyblock.Secret.Mod");
-                                FMLCommonHandler.instance().exitJava(0, false);
-                                break;
-                            }
-                        }
-                    } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
+                    System.out.println("Prepared update for Skyblock Secret Mod.");
+                    ModAssistantHook.open("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", downloadURL, finalModsFolder, "Skyblock.Secret.Mod.jar", "Skyblock.Secret.Mod");
                 });
             } else {
                 System.out.println("User is on the latest version of Skyblock Secret Mod.");
             }
         });
     }
-
     private static boolean isRedirected(Map<String, List<String>> header) {
         for( String hv : header.get( null )) {
             if(   hv.contains( " 301 " )

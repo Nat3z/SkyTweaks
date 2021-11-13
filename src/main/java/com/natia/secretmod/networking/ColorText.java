@@ -37,7 +37,7 @@ public class ColorText {
         });
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void changeText(ClientChatReceivedEvent event) {
         if (!SecretModConfig.colorCosmetic) return;
         if (event.type == 0) {

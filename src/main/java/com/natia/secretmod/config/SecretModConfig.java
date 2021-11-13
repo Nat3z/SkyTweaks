@@ -6,6 +6,8 @@ import com.natia.secretmod.vicious.HudElement;
 import com.natia.secretmod.vicious.ViciousConfig;
 import net.minecraft.util.EnumChatFormatting;
 
+import java.awt.*;
+
 public class SecretModConfig implements ViciousConfig {
 
     /* General - --- */
@@ -51,13 +53,15 @@ public class SecretModConfig implements ViciousConfig {
 
     @AddConfig(
             name = "Minion Analyzer",
-            description = "Analyzes minion contents and calculates the amount of coins in the minion.",
+            description = "Analyzes minion contents and calculates the amount of coins in it.",
             category = "General",
             subCategory = "Quality of Life",
             type = ConfigType.TOGGLE,
             UAYOR = false
     )
     public static boolean minionAnalyzer = false;
+
+
 
     /* Dungeons */
 
@@ -94,7 +98,7 @@ public class SecretModConfig implements ViciousConfig {
 
     @AddConfig(
             name = "Copy Fails/Deaths",
-            description = "Automatcally copies dungeon fails AND dungeon deaths.",
+            description = "Automatically copies dungeon fails AND dungeon deaths.",
             category = "Dungeons",
             subCategory = "Dungeons",
             type = ConfigType.TOGGLE,
@@ -112,6 +116,85 @@ public class SecretModConfig implements ViciousConfig {
     )
     public static boolean rpCommand = false;
 
+
+
+    /* Slayers */
+
+    /* Slayers - Voidgloom Seraph */
+    @AddConfig(
+            name = "Voidgloom Seraph Assist",
+            description = "Assists you in the fight with the Voidgloom Seraph.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean seraphHelper = false;
+
+    @AddConfig(
+            name = "Color Voidgloom Seraph",
+            description = "Assists you in the fight by coloring it when it is in a certain phase.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean seraphColorize = false;
+
+    @AddConfig(
+            name = "Yang Glyph Notifier",
+            description = "Notifies and highlights the YANG GLYPH.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean yangGlyphHighlights = false;
+
+    @AddConfig(
+            name = "Yang Glyph Highlight Color",
+            description = "Highlight color of the YANG GLYPH.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int yangGlyphHighlightColor = new Color(164, 2, 17).getRed();
+
+    /* beacons */
+    @AddConfig(
+            name = "Beacon Notifier",
+            description = "Notifies and highlights the exploding beacon.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean beaconHighlights = false;
+
+    @AddConfig(
+            name = "Exploding beacon Highlight Color",
+            description = "Highlight color of the EXPLODING BEACON.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int beaconHighlightColor = new Color(0, 101, 164).getRed();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /* HUD stuff at end */
 
     @AddConfig(
@@ -124,6 +207,17 @@ public class SecretModConfig implements ViciousConfig {
             UAYOR = false
     )
     public static HudElement spiritBonzoTimerHUD = new HudElement(0, 0, 130, 50);
+
+    @AddConfig(
+            name = "Voidgloom Assist",
+            description = "Voidgloom HUD",
+            category = "HUD",
+            type = ConfigType.HUD,
+            subCategory = "",
+            requiredElementToggled = "seraphHelper",
+            UAYOR = false
+    )
+    public static HudElement voidgloomHUD = new HudElement(0, 0, 190, 100);
 
     @AddConfig(
             name = "Readied Players HUD",

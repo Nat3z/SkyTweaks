@@ -1,4 +1,4 @@
-package com.natia.secretmod.core;
+package com.natia.secretmod.commands;
 
 import com.natia.secretmod.SecretUtils;
 import com.natia.secretmod.utils.FileUtils;

@@ -103,7 +103,7 @@ public class ViciousMod {
         for(int var4 = 0; var4 < var3; ++var4) {
             Field variable = var2[var4];
             if (variable.isAnnotationPresent(AddConfig.class)) {
-                AddConfig cfg = (AddConfig)variable.getAnnotation(AddConfig.class);
+                AddConfig cfg = variable.getAnnotation(AddConfig.class);
 
                 configItemList.add(new ConfigItem(variable, cfg.name(), cfg.description(), cfg.subCategory(), cfg.category(), cfg.type(), cfg.UAYOR(), cfg.sliderChoices(), getConfig()));
             }
@@ -112,7 +112,7 @@ public class ViciousMod {
         return configItemList;
     }
 
-    private Yaml yamlDisplay() {
+    public Yaml yamlDisplay() {
         DumperOptions options = new DumperOptions();
         options.setIndent(2);
         options.setPrettyFlow(true);

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class RepartyHook {
         return INSTANCE;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void checkIfReady(ClientChatReceivedEvent event) {
         if (!SecretModConfig.rpCommand) return;
         /* reparty system */
@@ -36,7 +37,7 @@ public class RepartyHook {
                 String[] split = message.replace("Party " + message.split(" ")[1], "").split(" ");
                 for (String string : split) {
                     if (!string.contains("]") && !string.contains("●")) {
-                        partyMembers.add(StringUtils.stripControlCodes(string));
+                        partyMembers.add(StringUtils.stripControlCodes(string).replace(" ", ""));
                     }
                 }
 
@@ -49,7 +50,6 @@ public class RepartyHook {
 
     @SubscribeEvent
     public void onSwitch(WorldEvent.Load event) {
-        partyMembers.clear();
         cancelChats = false;
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -22,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 public class BonzoSpiritHook {
     Minecraft mc = Minecraft.getMinecraft();
     Stopwatch cooldown = Stopwatch.createUnstarted();
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onChat(ClientChatReceivedEvent event) {
         if (!SecretModConfig.maskTimers) return;
 
         /* I dont know exact message lmao */
-        String message = event.message.getUnformattedText();
-        if (message.contains("Bonzo's Mask") && message.contains("saved your life!")) {
+        String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
+        if (!message.contains(": ") && message.endsWith("saved your life!")) {
             if (!cooldown.isRunning()) cooldown.start();
             cooldown.reset();
             /* yoinked from Danker's Skyblock Mod.
@@ -47,7 +48,7 @@ public class BonzoSpiritHook {
     }
 
     private ResourceLocation BONZO_MASK = new ResourceLocation("secretmod", "bonzo_mask.png");
-    int cooldownSeconds = 0;
+    int cooldownSeconds = 999999999;
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (!SecretModConfig.maskTimers) return;

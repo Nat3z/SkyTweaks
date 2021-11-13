@@ -13,24 +13,35 @@ import com.natia.secretmod.core.TickedEvent;
 import com.natia.secretmod.utils.FileUtils;
 import com.natia.secretmod.utils.ItemDiff;
 import com.natia.secretmod.utils.Location;
+import com.natia.secretmod.utils.RenderUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
+import net.minecraft.world.World;
 
+import javax.vecmath.Vector3f;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -46,6 +57,10 @@ public class SecretUtils {
     private static Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
     public static JsonObject bazaarCached = new JsonObject();
     public static TileEntitySign CURRENT_SIGN;
+
+    public static void sendMessage(String message) {
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[Skyblock Secret Mod] " + EnumChatFormatting.WHITE + message));
+    }
 
     public static boolean isValid() {
         if (Minecraft.getMinecraft().getCurrentServerData().serverIP != null && Minecraft.getMinecraft().getCurrentServerData().serverIP.contains("hypixel.net")) {
@@ -205,6 +220,22 @@ public class SecretUtils {
         return entity.getUniqueID().version() == 2 && entityLivingBase.getHealth() == 20.0F && !entityLivingBase.isPlayerSleeping();
     }
 
+    public static Location isInDungeons() {
+        try {
+            if (isValid()) {
+                List<String> scoreboard = getScoreboardLines();
+
+                for (String s : scoreboard) {
+                    String sCleaned = cleanSB(s);
+                    if (sCleaned.contains("Dungeon Cleared"))
+                        return Location.THE_CATACOMBS;
+                }
+            }
+
+        } catch (Exception e) { e.printStackTrace(); }
+        return Location.NONE;
+    }
+
     /**
      * Made by BiscuitDevelopemnt's SkyblockAddons
      * MIT License
@@ -312,6 +343,56 @@ public class SecretUtils {
 
     public static void setPreviousInventory(List<ItemStack> previousInventory) {
         SecretUtils.previousInventory = previousInventory;
+    }
+
+    /**
+     * @author NatiaDev
+     * Gets all blocks in a certain block radius. (e.g. -100 5 10, -200 5 50)
+     * @return blocklist
+     */
+    public static Map<Block, BlockPos> getBlocksInBox(World world, BlockPos pos1, BlockPos pos2) {
+        Map<Block, BlockPos> blocks = new HashMap<>();
+
+        for (BlockPos blockPos : BlockPos.getAllInBox(pos1, pos2)) {
+            blocks.put(world.getBlockState(blockPos).getBlock(), blockPos);
+        }
+
+        return blocks;
+    }
+
+    /**
+     * @author NatiaDev
+     * Simulates a title and sends it to client.
+     * @param message
+     * @param color
+     */
+    public static void sendTitleCentered(String message, int color) {
+
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+        int height = sr.getScaledHeight();
+        int width = sr.getScaledWidth();
+        drawCenteredString(message, (int) (width / 2) / 3, (int) (height *0.450) / 3, color, 3);
+    }
+
+    public static boolean withinRange(BlockPos range, BlockPos pos1, BlockPos pos2) {
+            return (
+                    pos1.getX() >= pos2.getX() && pos1.getX() <= range.getX() &&
+                    pos1.getZ() >= pos2.getZ() && pos1.getZ() <= range.getZ()
+            );
+    }
+
+    public static void bindColor(Color color) {
+        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+    }
+
+    public static void drawCenteredString(String text, int x, int y, int color, double scale) {
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+        Minecraft.getMinecraft().fontRendererObj.drawString(text,
+                (int) (x) - Minecraft.getMinecraft().fontRendererObj.getStringWidth(text) / 2,
+                (int) (y), color, true);
+        GlStateManager.popMatrix();
     }
 
     public static File getGeneralFolder() {

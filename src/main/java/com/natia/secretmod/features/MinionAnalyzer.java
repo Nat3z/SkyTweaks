@@ -39,21 +39,18 @@ public class MinionAnalyzer {
         invalidSlots.add(53);
     }
 
-    private boolean executedThisGui = false;
-
     @SubscribeEvent
     public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (!SecretModConfig.minionAnalyzer) return;
         if (mc.theWorld == null) return;
         if (!SecretUtils.isValid()) return;
-        if (executedThisGui) return;
         moneyInMinion = 0;
         if (event.gui instanceof GuiChest) {
             GuiChest guiChest = (GuiChest) event.gui;
             ContainerChest container = (ContainerChest) guiChest.inventorySlots;
             IInventory inventory = container.getLowerChestInventory();
-            executedThisGui = true;
             if (inventory.getDisplayName().getUnformattedText().contains(" Minion")) {
+                /* multi thread */
                 for (Slot slot : container.inventorySlots) {
                     if (slot == null) continue;
                     if (slot.getStack() == null) continue;
@@ -69,37 +66,23 @@ public class MinionAnalyzer {
                     }
                 }
                 moneyInMinion = Math.ceil(moneyInMinion);
+
+                /* text renderer */
+                ScaledResolution sr = new ScaledResolution(mc);
+                int guiLeft = (sr.getScaledWidth() - 176) / 2;
+                int guiTop = (sr.getScaledHeight() - 222) / 2;
+
+                int x = guiLeft + 85;
+                int y = guiTop + (int)6.6;
+                DecimalFormat myFormatter = new DecimalFormat("###,###,###");
+                String output = myFormatter.format(moneyInMinion);
+                GL11.glTranslated(0, 0, 1);
+                if (moneyInMinion != -1)
+                    Minecraft.getMinecraft().fontRendererObj.drawString("Minion Value: +" + output, x, y, Color.GREEN.getRGB(), true);
+                else
+                    Minecraft.getMinecraft().fontRendererObj.drawString("Unable to get Minion Value.", x, y, Color.GRAY.getRGB(), true);
+                GL11.glTranslated(0, 0, -1);
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onClose(GuiOpenEvent event) {
-        if (event.gui == null) {
-            executedThisGui = false;
-        }
-    }
-
-    @SubscribeEvent
-    public void onRender(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!SecretModConfig.minionAnalyzer) return;
-        if (moneyInMinion == 0) return;
-
-        if (event.gui instanceof GuiChest) {
-            ScaledResolution sr = new ScaledResolution(mc);
-            int guiLeft = (sr.getScaledWidth() - 176) / 2;
-            int guiTop = (sr.getScaledHeight() - 222) / 2;
-
-            int x = guiLeft + 85;
-            int y = guiTop + (int)6.6;
-            DecimalFormat myFormatter = new DecimalFormat("###,###,###");
-            String output = myFormatter.format(moneyInMinion);
-            GL11.glTranslated(0, 0, 1);
-            if (moneyInMinion != -1)
-                Minecraft.getMinecraft().fontRendererObj.drawString("Minion Value: +" + output, x, y, Color.GREEN.getRGB(), true);
-            else
-                Minecraft.getMinecraft().fontRendererObj.drawString("Unable to get Minion Value.", x, y, Color.GRAY.getRGB(), true);
-            GL11.glTranslated(0, 0, -1);
         }
     }
 
