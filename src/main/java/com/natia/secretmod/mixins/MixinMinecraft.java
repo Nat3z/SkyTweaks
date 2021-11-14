@@ -1,6 +1,9 @@
 package com.natia.secretmod.mixins;
 
 import com.natia.secretmod.SecretMod;
+import com.natia.secretmod.SecretUtils;
+import com.natia.secretmod.utils.FileUtils;
+import com.natia.secretmod.utils.FrameMaker;
 import com.natia.secretmod.utils.JarFileReader;
 import com.natia.secretmod.utils.ModAssistantHook;
 import net.minecraft.client.Minecraft;
@@ -15,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,6 +27,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.natia.secretmod.utils.WebUtils.fetch;
 
@@ -60,16 +67,71 @@ public abstract class MixinMinecraft {
         ModAssistantHook.openLauncher(modsFolder);
         /* check for updates & auto update */
         File finalModsFolder = modsFolder;
-        fetch("https://secretmod-hypixel.herokuapp.com/latest", res -> {
-            if (!SecretMod.VERSION.equals(res.asString())) {
+        fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res -> {
+            if (!SecretMod.VERSION.equals(res.asJson().get("tag_name").getAsString())) {
                 /* update that mod! */
-                System.out.println("Adding update to Skyblock Secret Mod...");
+                System.out.println("Applying update to Skyblock Secret Mod...");
                 fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res1 -> {
                     String downloadURL = res1.asJson().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
                     System.out.println("Prepared update for Skyblock Secret Mod.");
                     ModAssistantHook.open("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", downloadURL, finalModsFolder, "Skyblock.Secret.Mod.jar", "Skyblock.Secret.Mod");
                 });
             } else {
+                File versionType = new File(SecretUtils.getGeneralFolder().getAbsolutePath() + "\\versionType.txt");
+                if (SecretMod.IS_UNSTABLE) {
+                    System.out.println("THIS USER IS CURRENTLY USING AN UNSTABLE RELEASE OF SKYBLOCK SECRET MOD. IF LOGS WERE SENT AND THIS WAS RECEIVED, PLEASE DO NOT GIVE ANY SUPPORT.");
+                }
+                if (versionType.exists()) {
+                    if (Boolean.getBoolean(FileUtils.readFile(versionType)) != SecretMod.IS_UNSTABLE) {
+                        FileUtils.writeToFile(versionType, "" + SecretMod.IS_UNSTABLE);
+                    }
+
+                }
+                /* if downloaded is first ever download && version is unstable... */
+                else if (SecretMod.IS_UNSTABLE) {
+                    /* version is unstable ui ui */
+                    AtomicBoolean willAllow = new AtomicBoolean(true);
+                    FrameMaker maker = new FrameMaker("Version detected as UNSTABLE.", new Dimension(350, 150), WindowConstants.DO_NOTHING_ON_CLOSE, false);
+                    AtomicBoolean suc = new AtomicBoolean(false);
+
+                    JFrame frame = maker.pack();
+                    maker.addText("You are currently using an UNSTABLE release.", 10, 10, 11, false);
+                    maker.addText("<html>" +
+                            "Since this is your first release, we highly<br/>recommend you download the latest stable release.<br/>" +
+                            "Do you acknowledge that you will not receive any<br/>support and me (NatiaDev) is not<br/>" +
+                            "liable for any lost items due to<br/>crashes related to the mod?</html>", 10, 25, 11, false);
+
+                    JButton allowUse = maker.addButton("Yes", 180, 70, 60, e -> {
+                        suc.set(true);
+                        willAllow.set(true);
+                        frame.dispose();
+                    });
+                    JButton disallowUse = maker.addButton("No", 270, 70, 60, e -> {
+                        suc.set(true);
+                        willAllow.set(false);
+                        frame.dispose();
+                    });
+                    maker.override();
+                    /* keep it from continuing */
+                    while (!suc.get()) {
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (!willAllow.get())
+                        FMLCommonHandler.instance().exitJava(0, false);
+                    else {
+                        try {
+                            versionType.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        FileUtils.writeToFile(versionType, "" + SecretMod.IS_UNSTABLE);
+                    }
+                }
                 System.out.println("User is on the latest version of Skyblock Secret Mod.");
             }
         });

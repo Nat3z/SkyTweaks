@@ -30,6 +30,17 @@ public class SecretModConfig implements ViciousConfig {
             UAYOR = false
     )
     public static boolean colorCosmetic = true;
+
+    @AddConfig(
+            name = "Cache Bazaar",
+            description = "Allow looping every 15-20s through the bazaar. Will (maybe) reduce ping/lag.",
+            category = "General",
+            subCategory = "---",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean bazaarCaching = true;
+
     /* General - Quality of Life */
     @AddConfig(
             name = "Don't Render Players in Hub",
@@ -107,6 +118,37 @@ public class SecretModConfig implements ViciousConfig {
     public static boolean copyFails = true;
 
     @AddConfig(
+            name = "Highlight Inactive Terminals",
+            description = "Highlights all skipped/uncompleted terminals in F7.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = ConfigType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean terminalHighlight = true;
+
+    @AddConfig(
+            name = "Highlight Terminals Color - Inactive",
+            description = "Color of Inactive/Inactivated Terminals.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = ConfigType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int terminalHighlightColorINACTIVE = Color.RED.getRGB();
+
+    @AddConfig(
+            name = "Highlight Terminals Color - Active",
+            description = "Color of Activated Terminals.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = ConfigType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int terminalHighlightColorACTIVE = Color.GREEN.getRGB();
+
+
+    @AddConfig(
             name = "Reparty Command",
             description = "Automatically reparties all party members. (/rp) This is UAYOR because this is technically a chat macro.",
             category = "Dungeons",
@@ -142,8 +184,8 @@ public class SecretModConfig implements ViciousConfig {
     public static boolean seraphColorize = false;
 
     @AddConfig(
-            name = "Yang Glyph Notifier",
-            description = "Notifies and highlights the YANG GLYPH.",
+            name = "Yang Glyph Highlighter",
+            description = "Highlights the YANG GLYPH.",
             category = "Slayers",
             subCategory = "Voidgloom Seraph",
             type = ConfigType.TOGGLE,
@@ -163,7 +205,7 @@ public class SecretModConfig implements ViciousConfig {
 
     /* beacons */
     @AddConfig(
-            name = "Beacon Notifier",
+            name = "Exploding Beacon Notifier",
             description = "Notifies and highlights the exploding beacon.",
             category = "Slayers",
             subCategory = "Voidgloom Seraph",
@@ -173,7 +215,7 @@ public class SecretModConfig implements ViciousConfig {
     public static boolean beaconHighlights = false;
 
     @AddConfig(
-            name = "Exploding beacon Highlight Color",
+            name = "Exploding Beacon Highlight Color",
             description = "Highlight color of the EXPLODING BEACON.",
             category = "Slayers",
             subCategory = "Voidgloom Seraph",
@@ -181,6 +223,17 @@ public class SecretModConfig implements ViciousConfig {
             UAYOR = false
     )
     public static int beaconHighlightColor = new Color(0, 101, 164).getRed();
+
+    @AddConfig(
+            name = "Exploding Beacon Notify Type",
+            description = "Type of notification for exploding beacon.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = ConfigType.SLIDER_TEXT,
+            sliderChoices = {"Both", "Highlight Only", "Notification Only"},
+            UAYOR = false
+    )
+    public static String beaconHighlightType = "Both";
 
 
 

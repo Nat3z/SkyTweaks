@@ -75,8 +75,8 @@ public class RepartyCommand extends CommandBase {
 
                     RepartyHook.getInstance().partyMembers.clear();
                     mc.thePlayer.sendChatMessage(command);
-                    }, 1890);
-            }, 2900);
+                    }, 700);
+            }, 1100);
         } else {
             SecretUtils.sendMessage("The feature 'Reparty Command' is not enabled.");
         }

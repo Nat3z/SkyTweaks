@@ -8,3 +8,4 @@ Software | License
 [Skyblock Addons](https://github.com/BiscuitDevelopment/SkyblockAddons/) | [MIT](https://github.com/Nat3z/SkyblockMod/blob/main/Licenses/Skyblock-Addons-MIT.txt)
 [SkytilsMod](https://github.com/Skytils/SkytilsMod/) | [GNU Affero General Public License v3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE)
 [NotEnoughUpdates](https://github.com/Moulberry/NotEnoughUpdates/) | [Attribution-NonCommercial 3.0](https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE)
+[HyAddons](https://github.com/HyAddons/HyAddons/)

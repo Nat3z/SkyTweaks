@@ -13,6 +13,7 @@ import com.natia.secretmod.features.MinionAnalyzer;
 import com.natia.secretmod.features.RepartyHook;
 import com.natia.secretmod.features.dungeons.BonzoSpiritHook;
 import com.natia.secretmod.features.dungeons.CopyFails;
+import com.natia.secretmod.features.dungeons.TerminalHighlight;
 import com.natia.secretmod.features.slayers.VoidGloom;
 import com.natia.secretmod.networking.ColorText;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -30,7 +31,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 )
 public class SecretMod {
     public static final String MODID = "secret-mod-v2";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "v1.0.3-PRE";
+    public static final boolean IS_UNSTABLE = true;
 
     public static CoreExtension configHandler;
     @Mod.Instance(MODID)
@@ -51,20 +53,16 @@ public class SecretMod {
         MinecraftForge.EVENT_BUS.register(new TickedEvent());
         MinecraftForge.EVENT_BUS.register(new BlockRenderingHook());
 
-        /* Bazaar Notifier */
-        //MinecraftForge.EVENT_BUS.register(new BazaarHook());
-        //MinecraftForge.EVENT_BUS.register(new Notifier());
-        /* Mask Timers */
+        /* Dungeons*/
         MinecraftForge.EVENT_BUS.register(new BonzoSpiritHook());
         MinecraftForge.EVENT_BUS.register(new CopyFails());
+        MinecraftForge.EVENT_BUS.register(new TerminalHighlight());
+        MinecraftForge.EVENT_BUS.register(RepartyHook.getInstance());
 
         /* Quality of Life */
         MinecraftForge.EVENT_BUS.register(new MinionAnalyzer());
         /* Cosmetics */
         MinecraftForge.EVENT_BUS.register(new ColorText());
-
-        //MinecraftForge.EVENT_BUS.register(AreYouReady.getInstance());
-        MinecraftForge.EVENT_BUS.register(RepartyHook.getInstance());
 
         /* Slayers - Voidgloom */
         MinecraftForge.EVENT_BUS.register(VoidGloom.getInstance());

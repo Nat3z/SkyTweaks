@@ -23,15 +23,16 @@ import java.util.concurrent.TimeUnit;
 public class BonzoSpiritHook {
     Minecraft mc = Minecraft.getMinecraft();
     Stopwatch cooldown = Stopwatch.createUnstarted();
-    @SubscribeEvent(priority = EventPriority.HIGH)
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatReceivedEvent event) {
         if (!SecretModConfig.maskTimers) return;
 
         /* I dont know exact message lmao */
         String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
         if (!message.contains(": ") && message.endsWith("saved your life!")) {
+            if (cooldown.isRunning()) cooldown.reset();
             if (!cooldown.isRunning()) cooldown.start();
-            cooldown.reset();
             /* yoinked from Danker's Skyblock Mod.
             * https://github.com/bowser0000/SkyblockMod/
              */
@@ -41,7 +42,7 @@ public class BonzoSpiritHook {
                 for (String line : ItemUtils.getLore(bonzoMask)) {
                     String stripped = StringUtils.stripControlCodes(line);
                     if (stripped.startsWith("Cooldown: "))
-                        cooldownSeconds = Integer.parseInt(stripped.replaceAll("[^\\d]", ""));
+                        cooldownSeconds = Integer.parseInt(stripped.replace("Cooldown: ", "").replace("s", ""));
                 }
             }
         }

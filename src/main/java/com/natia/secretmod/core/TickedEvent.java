@@ -49,8 +49,10 @@ public class TickedEvent {
         if (ticks % 5 == 0) {
             if (SecretModConfig.itemPickupLogs)
                 SecretUtils.getInventoryDiff(p.inventory.mainInventory);
-            if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 10) {
+            if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 10 && SecretModConfig.bazaarCaching) {
                 tickEventWatch.reset();
+                if (!tickEventWatch.isRunning()) tickEventWatch.start();
+
                 new Thread(SecretUtils::updateBazaarCache).start();
             }
         }

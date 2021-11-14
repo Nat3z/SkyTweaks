@@ -24,7 +24,7 @@ public class MixinEndermanRender {
 
     @Inject(method = "getEntityTexture", at = @At("HEAD"), cancellable = true)
     private void getEntityTexture(EntityEnderman entity, CallbackInfoReturnable<ResourceLocation> cir) {
-        EndermanModelHook.overrideTexture(cir);
+        EndermanModelHook.overrideTexture(entity, cir);
     }
 
 }

@@ -48,7 +48,7 @@ Congratulations! You have successfully added the Skyblock Secret Mod ExtensionsA
 - Spirit/Bonzo Timers - Displays a timer which shows how long the cooldown for the spirit/bonzo mask is.
 - Copy Fails/Deaths - Automatically copies dungeon fails AND dungeon deaths.
 - Reparty Command (/rp) - Automatically reparties all party members.
-
+- Voidgloom Seraph Assistance - Assists you in the fight with the Voidgloom Seraph.
 # Commands
 - /sm - Command to access config gui.
 - /smhud - Command to change positions of hud elements.

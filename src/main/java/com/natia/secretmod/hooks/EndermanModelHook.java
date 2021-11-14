@@ -3,7 +3,11 @@ package com.natia.secretmod.hooks;
 import com.natia.secretmod.SecretUtils;
 import com.natia.secretmod.config.SecretModConfig;
 import com.natia.secretmod.features.slayers.VoidGloom;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -36,16 +40,24 @@ public class EndermanModelHook {
 
     }*/
 
-    public static void overrideTexture(CallbackInfoReturnable<ResourceLocation> cir) {
+    public static void overrideTexture(Entity entity, CallbackInfoReturnable<ResourceLocation> cir) {
         if (!SecretModConfig.seraphHelper) return;
         if (!SecretModConfig.seraphColorize) return;
         if (VoidGloom.slayerHealth.isEmpty()) return;
+        String entityName = StringUtils.stripControlCodes(entity.getName());
 
-        String unformattedSlayer = StringUtils.stripControlCodes(VoidGloom.slayerHealth);
-        if (unformattedSlayer.contains("Hits")) {
-            cir.setReturnValue(hit_state_enderman);
-        } else {
-            cir.setReturnValue(damage_state_enderman);
+        if (!entityName.equals("Enderman")) return;
+        /* check if it's a voidgloom thru world using nearby armor stands */
+        for (EntityArmorStand e : Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityArmorStand.class, entity.getEntityBoundingBox().expand(3, 5, 3))) {
+            if (StringUtils.stripControlCodes(e.getName()).contains("Voidgloom Seraph")) {
+                String unformattedSlayer = StringUtils.stripControlCodes(VoidGloom.slayerHealth);
+                if (unformattedSlayer.contains("Hits")) {
+                    cir.setReturnValue(hit_state_enderman);
+                } else {
+                    cir.setReturnValue(damage_state_enderman);
+                }
+                break;
+            }
         }
     }
     /*public static void post() {

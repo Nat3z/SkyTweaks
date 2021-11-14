@@ -20,7 +20,6 @@ public class BlockRenderingHook {
     @SubscribeEvent
     public void partialTicks(DrawBlockHighlightEvent event) {
         globalPartialTicks = event.partialTicks;
-        RenderUtils.highlightBlock(new Vector3f(0, 10, 0), 0.8f, event.partialTicks, new Color(SecretModConfig.yangGlyphHighlightColor));
     }
 
     @SubscribeEvent
