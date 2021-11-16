@@ -9,7 +9,7 @@ A Hypixel Skyblock Quality of Life mod with features that you may or may not be 
 By having your mod implemented into the Extensions API, your mod will soon^tm have auto-updating if you link your github page!
 
 ## How to implement into your mod
-First, install Skyblock Secret Mod and make sure it's the latest version. 
+First, install SkyTweaks and make sure it's the latest version. 
 Then, you create a `libs` or `deps` folder in your gradle project and put the mod's jar in it.
 Next, you make sure the following lines are in your `build.gradle` file:
 ```gradle
@@ -35,7 +35,7 @@ Then, you add these lines in your `postInit(FMLPostInitializationEvent)` method:
 extension.saveConfig();
 ```
 
-Congratulations! You have successfully added the Skyblock Secret Mod ExtensionsAPI into your mod!
+Congratulations! You have successfully added the SkyTweaks ExtensionsAPI into your mod!
 
 
 # Features
@@ -55,7 +55,7 @@ Congratulations! You have successfully added the Skyblock Secret Mod ExtensionsA
 - /rp - Command to start the reparty hook.
 
 # Open Sourced
-Skyblock Secret Mod is open source and because of this it uses code from open source programs! Below is a list of open source programs used to develop **Skyblock Secret Mod**!
+SkyTweaks is open source and because of this it uses code from open source programs! Below is a list of open source programs used to develop **SkyTweaks**!
 
 [List of Open Source Programs](https://github.com/Nat3z/SkyTweaks/blob/main/OPEN_SOURCE_SOFTWARE.md)
 

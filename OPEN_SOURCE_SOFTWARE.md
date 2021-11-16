@@ -1,6 +1,6 @@
 # Software's Code Used
 
-Skyblock Secret Mod Uses Code From Open Source Projects. Here are the Programs used:
+SkyTweaks Uses Code From Open Source Projects. Here are the Programs used:
 
 Software | License
 ------------ | -------------
