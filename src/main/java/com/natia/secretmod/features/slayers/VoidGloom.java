@@ -144,8 +144,7 @@ public class VoidGloom {
                         /* checks beacon highlight type */
                         if ((SecretModConfig.beaconHighlightType.equals("Both") || SecretModConfig.beaconHighlightType.equals("Highlight Only"))) {
                             Vector3f vec = new Vector3f(pos.getX(), pos.getY(), pos.getZ());
-                            Vector3f beaconVec = new Vector3f(pos.getX(), pos.getY() + 1, pos.getZ());
-                            RenderUtils.showBeam(beaconVec, new Color(SecretModConfig.beaconHighlightColor), event.partialTicks);
+                            RenderUtils.showBeam(vec, new Color(SecretModConfig.beaconHighlightColor), event.partialTicks);
                             RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, new Color(SecretModConfig.beaconHighlightColor));
                         }
                     }

@@ -3,6 +3,7 @@ package com.natia.secretmod.features.dungeons;
 import com.google.common.base.Stopwatch;
 import com.natia.secretmod.config.SecretModConfig;
 import com.natia.secretmod.utils.ItemUtils;
+import com.natia.secretmod.vicious.BaseViciousHUDEditor;
 import com.natia.secretmod.vicious.HudElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -57,14 +58,19 @@ public class BonzoSpiritHook {
 
         HudElement hudElement = SecretModConfig.spiritBonzoTimerHUD;
         if (cooldown.isRunning() && cooldown.elapsed(TimeUnit.SECONDS) >= cooldownSeconds) {
-            cooldown.stop();
+            cooldown.reset();
         }
 
         if (cooldown.isRunning()) {
             mc.getTextureManager().bindTexture(BONZO_MASK);
-            Gui.drawModalRectWithCustomSizedTexture(hudElement.x, hudElement.y, 0, 0, 50, 50, 50, 50);
-            mc.fontRendererObj.drawString("Cooldown:", hudElement.x + 60, hudElement.y + 10, new Color(255, 136, 57).getRGB(), true);
-            mc.fontRendererObj.drawString((cooldownSeconds - cooldown.elapsed(TimeUnit.SECONDS)) + "s", hudElement.x + 60, hudElement.y + 20, new Color(255, 228, 62).getRGB(), true);
+            Gui.drawModalRectWithCustomSizedTexture(hudElement.x, hudElement.y, 0, 0, 10, 10, 50, 50);
+            mc.fontRendererObj.drawString("Cooldown:", hudElement.x + 60, hudElement.y + 0, new Color(255, 136, 57).getRGB(), true);
+            mc.fontRendererObj.drawString((cooldownSeconds - cooldown.elapsed(TimeUnit.SECONDS)) + "s", hudElement.x + 60, hudElement.y + 10, new Color(255, 228, 62).getRGB(), true);
+        } else if (mc.currentScreen instanceof BaseViciousHUDEditor) {
+            mc.getTextureManager().bindTexture(BONZO_MASK);
+            Gui.drawModalRectWithCustomSizedTexture(hudElement.x, hudElement.y, 0, 0, 10, 10, 50, 50);
+            mc.fontRendererObj.drawString("Cooldown:", hudElement.x + 60, hudElement.y + 0, new Color(255, 136, 57).getRGB(), true);
+            mc.fontRendererObj.drawString((cooldownSeconds - cooldown.elapsed(TimeUnit.SECONDS)) + "s", hudElement.x + 60, hudElement.y + 10, new Color(255, 228, 62).getRGB(), true);
         }
     }
 

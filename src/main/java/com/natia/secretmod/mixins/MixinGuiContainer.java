@@ -39,7 +39,7 @@ public abstract class MixinGuiContainer {
                 /* vanilla chest. */
                 itemStacks.forEach(itemStack -> {
                     if (itemStack != null && itemStack.getDisplayName() != null) {
-                        System.out.println(itemStack.getDisplayName());
+
                     }
                 });
 

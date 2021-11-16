@@ -1,9 +1,7 @@
 package com.natia.secretmod.utils;
 
-import com.natia.secretmod.SecretMod;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.*;
 import java.awt.*;

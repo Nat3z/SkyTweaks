@@ -8,7 +8,7 @@ import com.natia.secretmod.commands.SavePickupLog;
 import com.natia.secretmod.core.TickedEvent;
 import com.natia.secretmod.extensions.ExtensionList;
 import com.natia.secretmod.core.BlockRenderingHook;
-import com.natia.secretmod.features.dungeons.AreYouReady;
+import com.natia.secretmod.features.AlertPickups;
 import com.natia.secretmod.features.MinionAnalyzer;
 import com.natia.secretmod.features.RepartyHook;
 import com.natia.secretmod.features.dungeons.BonzoSpiritHook;
@@ -24,19 +24,19 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
-        modid = SecretMod.MODID,
-        name = "Secret Mod",
-        version = SecretMod.VERSION,
+        modid = SkyTweaks.MODID,
+        name = "SkyTweaks",
+        version = SkyTweaks.VERSION,
         clientSideOnly = true
 )
-public class SecretMod {
-    public static final String MODID = "secret-mod-v2";
-    public static final String VERSION = "v1.0.3-PRE";
+public class SkyTweaks {
+    public static final String MODID = "skytweaks-mod";
+    public static final String VERSION = "v1.0.3";
     public static final boolean IS_UNSTABLE = true;
 
     public static CoreExtension configHandler;
     @Mod.Instance(MODID)
-    public static SecretMod INSTANCE;
+    public static SkyTweaks INSTANCE;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -61,13 +61,15 @@ public class SecretMod {
 
         /* Quality of Life */
         MinecraftForge.EVENT_BUS.register(new MinionAnalyzer());
+        MinecraftForge.EVENT_BUS.register(new AlertPickups());
+
         /* Cosmetics */
         MinecraftForge.EVENT_BUS.register(new ColorText());
 
         /* Slayers - Voidgloom */
         MinecraftForge.EVENT_BUS.register(VoidGloom.getInstance());
 
-        System.out.println("Secret Mod V2 Initialized");
+        System.out.println("SkyTweaks Mod Initialized");
     }
 
     @Mod.EventHandler

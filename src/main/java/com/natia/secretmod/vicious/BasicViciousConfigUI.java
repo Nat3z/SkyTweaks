@@ -1,13 +1,10 @@
 package com.natia.secretmod.vicious;
 
-import com.natia.secretmod.SecretMod;
-import com.natia.secretmod.config.SecretModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -453,8 +450,5 @@ public class BasicViciousConfigUI extends GuiScreen {
 
         super.updateScreen();
     }
-
-
-
 
 }

@@ -53,16 +53,6 @@ public class SecretModConfig implements ViciousConfig {
     public static boolean dontRenderPlayersInHub = false;
 
     @AddConfig(
-            name = "Item Pickup Logs",
-            description = "Creates a text file where it shows item drops/pickups throughout your session.",
-            category = "General",
-            subCategory = "Quality of Life",
-            type = ConfigType.TOGGLE,
-            UAYOR = false
-    )
-    public static boolean itemPickupLogs = false;
-
-    @AddConfig(
             name = "Minion Analyzer",
             description = "Analyzes minion contents and calculates the amount of coins in it.",
             category = "General",
@@ -119,11 +109,11 @@ public class SecretModConfig implements ViciousConfig {
 
     @AddConfig(
             name = "Highlight Inactive Terminals",
-            description = "Highlights all skipped/uncompleted terminals in F7.",
+            description = "Highlights all skipped/uncompleted terminals in F7. UAYOR because you can see blocks through walls. (NOT TESTED)",
             category = "Dungeons",
             subCategory = "Dungeons",
             type = ConfigType.TOGGLE,
-            UAYOR = false
+            UAYOR = true
     )
     public static boolean terminalHighlight = true;
 

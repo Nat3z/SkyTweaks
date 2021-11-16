@@ -1,10 +1,10 @@
-# Skyblock Secret Mod
+# SkyTweaks
 A Hypixel Skyblock Quality of Life mod with features that you may or may not be able to find in other mods.
 
-Skyblock Secret Mod is a mod created by Natia/Nat3zDev that implements QOL features for Hypixel Skyblock. Like the description says, "it's a mod that has features you may or may not find in other mods."
+**SkyTweaks** is a mod created by Natia/Nat3zDev that implements QOL features for Hypixel Skyblock. Like the description says, "it's a mod that has features you may or may not find in other mods."
 
 # Extensions API
-**Skyblock Secret Mod** has an extensive Extensions API that allows you to access information in the mod and get a cool looking UI with it!
+**SkyTweaks** has an extensive Extensions API that allows you to access information in the mod and get a cool looking UI with it!
 
 By having your mod implemented into the Extensions API, your mod will soon^tm have auto-updating if you link your github page!
 
@@ -57,6 +57,6 @@ Congratulations! You have successfully added the Skyblock Secret Mod ExtensionsA
 # Open Sourced
 Skyblock Secret Mod is open source and because of this it uses code from open source programs! Below is a list of open source programs used to develop **Skyblock Secret Mod**!
 
-[List of Open Source Programs](https://github.com/Nat3z/SkyblockSecretMod/blob/main/OPEN_SOURCE_SOFTWARE.md)
+[List of Open Source Programs](https://github.com/Nat3z/SkyTweaks/blob/main/OPEN_SOURCE_SOFTWARE.md)
 
-This mod is protected by the [**MIT License**](https://github.com/Nat3z/SkyblockSecretMod/blob/main/LICENSE). All rights reserved.
+This mod is protected by the [**MIT License**](https://github.com/Nat3z/SkyTweaks/blob/main/LICENSE). All rights reserved.

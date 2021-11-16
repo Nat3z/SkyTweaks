@@ -1,8 +1,12 @@
 package com.natia.secretmod.vicious;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.awt.*;
 import java.io.IOException;
@@ -85,16 +89,21 @@ public class BaseViciousHUDEditor extends GuiScreen {
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         moveableButtonsMap.forEach((moveableButtons, configItem) -> {
+            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+            float minecraftScale = sr.getScaleFactor();
+            float floatMouseX = Mouse.getX() / minecraftScale;
+            float floatMouseY = (Display.getHeight() - Mouse.getY()) / minecraftScale;
+
             if (moveableButtons.id == move) {
                 HudElement element = (HudElement) configItem.getValue();
 
                 try {
-                    variable.set(configItem.getConfig(), new HudElement(mouseX, mouseY, element.width, element.height));
+                    variable.set(configItem.getConfig(), new HudElement((int)floatMouseX, (int)floatMouseY, element.width, element.height));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-                moveableButtons.xPosition = mouseX;
-                moveableButtons.yPosition = mouseY;
+                moveableButtons.xPosition = (int) floatMouseX;
+                moveableButtons.yPosition = (int) floatMouseY;
             }
         });
     }
@@ -107,7 +116,6 @@ public class BaseViciousHUDEditor extends GuiScreen {
                 move = -1;
                 module.saveConfig();
                 variable = null;
-                return;
             }
         });
     }

@@ -137,22 +137,32 @@ public class RenderUtils {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
-    private static final ResourceLocation beaconBeam = new ResourceLocation("secretmod", "entity/beam.png");
-
+    private static final ResourceLocation beaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
     /**
      * Renders a beacon beam. Recommended to place this under a BlockHighlight FML event.
      * @author NatiaDev
      */
-    public static void showBeam(Vector3f vec, Color color, float partialTicks) {
+    public static void showBeam(Vector3f loc, Color color, float partialTicks) {
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
+        double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
+        double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
+        BlockPos pos = new BlockPos(loc.x, loc.y, loc.z);
+        double x = pos.getX() - viewerX;
+        double y = pos.getY() - viewerY;
+        double z = pos.getZ() - viewerZ;
+
         GlStateManager.disableDepth();
         GlStateManager.disableCull();
         GlStateManager.disableTexture2D();
-        RenderUtils.renderBeaconBeam(vec.getX(), vec.getY() + 1, vec.getZ(), SecretModConfig.yangGlyphHighlightColor, 1.0f, partialTicks);
+        RenderUtils.renderBeaconBeam(x, y + 1, z, color.getRGB(), 1.0f, partialTicks);
         GlStateManager.disableLighting();
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
         GlStateManager.enableCull();
     }
+
     /**
      * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
      * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE

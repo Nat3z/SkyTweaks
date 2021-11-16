@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.core.ItemPickupEvent;
 import com.natia.secretmod.core.TickedEvent;
 import com.natia.secretmod.utils.FileUtils;
 import com.natia.secretmod.utils.ItemDiff;
@@ -35,6 +36,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import javax.vecmath.Vector3f;
 import java.awt.*;
@@ -59,7 +61,7 @@ public class SecretUtils {
     public static TileEntitySign CURRENT_SIGN;
 
     public static void sendMessage(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[Skyblock Secret Mod] " + EnumChatFormatting.WHITE + message));
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.AQUA + "[SkyTweaks] " + EnumChatFormatting.WHITE + message));
     }
 
     public static boolean isValid() {
@@ -236,6 +238,10 @@ public class SecretUtils {
         return Location.NONE;
     }
 
+    public static void playLoudSound(String sound, float pitch) {
+        Minecraft.getMinecraft().thePlayer.playSound(sound, 1, pitch);
+    }
+
     /**
      * Made by BiscuitDevelopemnt's SkyblockAddons
      * MIT License
@@ -283,18 +289,7 @@ public class SecretUtils {
                 int diff = newAmount - previousAmount;
                 if (diff != 0) {
                     List<String> scoreboardlines = SecretUtils.getScoreboardLines();
-                    boolean no = false;
-                    for (String sc : scoreboardlines) {
-                        String sCleaned = SecretUtils.cleanSB(sc);
-                        if (Location.getAsLocation(sCleaned) != Location.NONE) {
-                            inventoryDifference.add(new ItemDiff(key, diff, Location.getAsLocation(sCleaned)));
-                            no = true;
-                            break;
-                        }
-                    }
-                    if (!no) {
-                        inventoryDifference.add(new ItemDiff(key, diff, Location.NONE));
-                    }
+                    inventoryDifference.add(new ItemDiff(key, diff, Location.getCurrentLocation()));
                 }
             });
 
@@ -305,16 +300,23 @@ public class SecretUtils {
                 Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
                 if (itemDiffs.size() <= 0) {
                     itemPickupLog.put(diff.getDisplayName(), diff);
+                    if (diff.getAmount() > 0)
+                        MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
                 } else {
                     boolean added = false;
                     for (ItemDiff loopDiff : itemDiffs) {
                         if ((diff.getAmount() < 0 && loopDiff.getAmount() < 0) ||
                                 (diff.getAmount() > 0 && loopDiff.getAmount() > 0)) {
                             loopDiff.add(diff.getAmount());
+                            MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(loopDiff));
                             added = true;
                         }
                     }
-                    if (!added) itemPickupLog.put(diff.getDisplayName(), diff);
+                    if (!added) {
+                        itemPickupLog.put(diff.getDisplayName(), diff);
+                        if (diff.getAmount() > 0)
+                            MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
+                    }
                 }
             }
 

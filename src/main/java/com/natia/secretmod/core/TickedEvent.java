@@ -1,8 +1,7 @@
 package com.natia.secretmod.core;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ArrayListMultimap;
-import com.natia.secretmod.SecretMod;
+import com.natia.secretmod.SkyTweaks;
 import com.natia.secretmod.SecretUtils;
 import com.natia.secretmod.config.SecretModConfig;
 import com.natia.secretmod.extensions.Extension;
@@ -14,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -35,11 +33,11 @@ public class TickedEvent {
 
         if (smGui) {
             smGui = false;
-            Minecraft.getMinecraft().displayGuiScreen(new BasicViciousConfigUI(SecretMod.configHandler, SecretMod.configHandler.getConfigItems(), "General", new String[]{"General", "Dungeons", "Slayers"}));
+            Minecraft.getMinecraft().displayGuiScreen(new BasicViciousConfigUI(SkyTweaks.configHandler, SkyTweaks.configHandler.getConfigItems(), "General", new String[]{"General", "Dungeons", "Slayers"}));
             return;
         } else if (smHUD) {
             smHUD = false;
-            Minecraft.getMinecraft().displayGuiScreen(new BaseViciousHUDEditor(SecretMod.configHandler));
+            Minecraft.getMinecraft().displayGuiScreen(new BaseViciousHUDEditor(SkyTweaks.configHandler));
             return;
         }
 
@@ -47,8 +45,7 @@ public class TickedEvent {
         ticks++;
         // checks every 5 ticks (yes i am inspired by sba)
         if (ticks % 5 == 0) {
-            if (SecretModConfig.itemPickupLogs)
-                SecretUtils.getInventoryDiff(p.inventory.mainInventory);
+            SecretUtils.getInventoryDiff(p.inventory.mainInventory);
             if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 10 && SecretModConfig.bazaarCaching) {
                 tickEventWatch.reset();
                 if (!tickEventWatch.isRunning()) tickEventWatch.start();

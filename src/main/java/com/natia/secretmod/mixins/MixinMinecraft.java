@@ -1,19 +1,14 @@
 package com.natia.secretmod.mixins;
 
-import com.natia.secretmod.SecretMod;
+import com.natia.secretmod.SkyTweaks;
 import com.natia.secretmod.SecretUtils;
 import com.natia.secretmod.utils.FileUtils;
 import com.natia.secretmod.utils.FrameMaker;
-import com.natia.secretmod.utils.JarFileReader;
 import com.natia.secretmod.utils.ModAssistantHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfiguration;
-import net.minecraft.crash.CrashReport;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.io.IOUtils;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -67,28 +61,41 @@ public abstract class MixinMinecraft {
         ModAssistantHook.openLauncher(modsFolder);
         /* check for updates & auto update */
         File finalModsFolder = modsFolder;
-        fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res -> {
-            if (!SecretMod.VERSION.equals(res.asJson().get("tag_name").getAsString())) {
+        fetch("https://api.github.com/repos/Nat3z/SkyTweaks/releases/latest", res -> {
+            if (!SkyTweaks.VERSION.equals(res.asJson().get("tag_name").getAsString())) {
                 /* update that mod! */
-                System.out.println("Applying update to Skyblock Secret Mod...");
-                fetch("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", res1 -> {
+                System.out.println("Applying update to SkyTweaks...");
+                fetch("https://api.github.com/repos/Nat3z/SkyTweaks/releases/latest", res1 -> {
                     String downloadURL = res1.asJson().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
-                    System.out.println("Prepared update for Skyblock Secret Mod.");
-                    ModAssistantHook.open("https://api.github.com/repos/Nat3z/SkyblockSecretMod/releases/latest", downloadURL, finalModsFolder, "Skyblock.Secret.Mod.jar", "Skyblock.Secret.Mod");
+                    System.out.println("Prepared update for SkyTweaks.");
+                    String updateAs = "";
+                    /* for glass mod implementation */
+                    for (File file : finalModsFolder.listFiles()) {
+                        if (file.getName().startsWith("Skyblock.Secret.Mod")) {
+                            updateAs = "Skyblock.Secret.Mod.jar";
+                            break;
+                        } else if (file.getName().startsWith("SkyTweaks")) {
+                            updateAs = "SkyTweaks.jar";
+                            break;
+                        }
+
+                    }
+
+                    ModAssistantHook.open("https://api.github.com/repos/Nat3z/SkyTweaks/releases/latest", downloadURL, finalModsFolder, updateAs, updateAs);
                 });
             } else {
                 File versionType = new File(SecretUtils.getGeneralFolder().getAbsolutePath() + "\\versionType.txt");
-                if (SecretMod.IS_UNSTABLE) {
-                    System.out.println("THIS USER IS CURRENTLY USING AN UNSTABLE RELEASE OF SKYBLOCK SECRET MOD. IF LOGS WERE SENT AND THIS WAS RECEIVED, PLEASE DO NOT GIVE ANY SUPPORT.");
+                if (SkyTweaks.IS_UNSTABLE) {
+                    System.out.println("THIS USER IS CURRENTLY USING AN UNSTABLE RELEASE OF SkyTweaks. IF LOGS WERE SENT AND THIS WAS RECEIVED, PLEASE DO NOT GIVE ANY SUPPORT.");
                 }
                 if (versionType.exists()) {
-                    if (Boolean.getBoolean(FileUtils.readFile(versionType)) != SecretMod.IS_UNSTABLE) {
-                        FileUtils.writeToFile(versionType, "" + SecretMod.IS_UNSTABLE);
+                    if (Boolean.getBoolean(FileUtils.readFile(versionType)) != SkyTweaks.IS_UNSTABLE) {
+                        FileUtils.writeToFile(versionType, "" + SkyTweaks.IS_UNSTABLE);
                     }
 
                 }
                 /* if downloaded is first ever download && version is unstable... */
-                else if (SecretMod.IS_UNSTABLE) {
+                else if (SkyTweaks.IS_UNSTABLE) {
                     /* version is unstable ui ui */
                     AtomicBoolean willAllow = new AtomicBoolean(true);
                     FrameMaker maker = new FrameMaker("Version detected as UNSTABLE.", new Dimension(350, 150), WindowConstants.DO_NOTHING_ON_CLOSE, false);
@@ -129,10 +136,10 @@ public abstract class MixinMinecraft {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        FileUtils.writeToFile(versionType, "" + SecretMod.IS_UNSTABLE);
+                        FileUtils.writeToFile(versionType, "" + SkyTweaks.IS_UNSTABLE);
                     }
                 }
-                System.out.println("User is on the latest version of Skyblock Secret Mod.");
+                System.out.println("User is on the latest version of SkyTweaks.");
             }
         });
     }
