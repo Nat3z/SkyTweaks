@@ -31,8 +31,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 )
 public class SkyTweaks {
     public static final String MODID = "skytweaks-mod";
-    public static final String VERSION = "v1.0.3";
-    public static final boolean IS_UNSTABLE = true;
+    public static final String VERSION = "v1.0.3.1";
+    public static final boolean IS_UNSTABLE = false;
 
     public static CoreExtension configHandler;
     @Mod.Instance(MODID)

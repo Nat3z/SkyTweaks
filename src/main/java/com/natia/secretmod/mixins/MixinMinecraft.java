@@ -89,10 +89,7 @@ public abstract class MixinMinecraft {
                     System.out.println("THIS USER IS CURRENTLY USING AN UNSTABLE RELEASE OF SkyTweaks. IF LOGS WERE SENT AND THIS WAS RECEIVED, PLEASE DO NOT GIVE ANY SUPPORT.");
                 }
                 if (versionType.exists()) {
-                    if (Boolean.getBoolean(FileUtils.readFile(versionType)) != SkyTweaks.IS_UNSTABLE) {
-                        FileUtils.writeToFile(versionType, "" + SkyTweaks.IS_UNSTABLE);
-                    }
-
+                    FileUtils.writeToFile(versionType, "" + SkyTweaks.IS_UNSTABLE);
                 }
                 /* if downloaded is first ever download && version is unstable... */
                 else if (SkyTweaks.IS_UNSTABLE) {

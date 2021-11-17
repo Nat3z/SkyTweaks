@@ -31,7 +31,7 @@ public class AlertPickups {
     @SubscribeEvent
     public void onPickup(ItemPickupEvent event) {
         if (event.getItemDiff().getAmount() < 0) return;
-
+        if (mc.currentScreen != null) return;
         System.out.println("Pickup - " + event.getItemDiff().getDisplayName());
         if (alertedItems.contains(StringUtils.stripControlCodes(event.getItemDiff().getDisplayName()))) {
             SecretUtils.playLoudSound("random.orb", 0.5f);

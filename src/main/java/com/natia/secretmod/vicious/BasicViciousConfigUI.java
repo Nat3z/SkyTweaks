@@ -150,7 +150,7 @@ public class BasicViciousConfigUI extends GuiScreen {
     float scrollmount = 1.0f;
     private int width = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
 
-    private int imageX = width / 2 - 20;
+    private int imageX = width / 2 - 50;
     private int imageY = 80;
 
     private int currentColor = 0;
@@ -169,8 +169,8 @@ public class BasicViciousConfigUI extends GuiScreen {
                 mc.getTextureManager().bindTexture(COLOR_WHEEL);
                 Gui.drawModalRectWithCustomSizedTexture(imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight);
                 drawCenteredString("Color Picker", (width / 2 + 3) / 2, (int) (height * 0.1) / 2, new Color(28, 209, 70).getRGB(), 2);
-                int currColorx = imageY + 15;
-                int currColorY = imageX / 2;
+                int currColorx = 20;
+                int currColorY = 20;
                 Gui.drawRect(currColorx, currColorY, currColorx + 20, currColorY + 20, currentColor);
 
                 super.drawScreen(mouseX, mouseY, partialTicks);

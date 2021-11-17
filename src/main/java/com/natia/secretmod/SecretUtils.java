@@ -287,8 +287,7 @@ public class SecretUtils {
                 int previousAmount = previousInventoryMap.getOrDefault(key, 0);
                 int newAmount = newInventoryMap.getOrDefault(key, 0);
                 int diff = newAmount - previousAmount;
-                if (diff != 0) {
-                    List<String> scoreboardlines = SecretUtils.getScoreboardLines();
+                if (diff > 0) {
                     inventoryDifference.add(new ItemDiff(key, diff, Location.getCurrentLocation()));
                 }
             });
@@ -300,8 +299,7 @@ public class SecretUtils {
                 Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
                 if (itemDiffs.size() <= 0) {
                     itemPickupLog.put(diff.getDisplayName(), diff);
-                    if (diff.getAmount() > 0)
-                        MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
+                    MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
                 } else {
                     boolean added = false;
                     for (ItemDiff loopDiff : itemDiffs) {
@@ -314,8 +312,7 @@ public class SecretUtils {
                     }
                     if (!added) {
                         itemPickupLog.put(diff.getDisplayName(), diff);
-                        if (diff.getAmount() > 0)
-                            MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
+                        MinecraftForge.EVENT_BUS.post(new ItemPickupEvent(diff));
                     }
                 }
             }

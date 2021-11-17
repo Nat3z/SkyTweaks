@@ -13,10 +13,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class TickedEvent {
@@ -46,6 +49,7 @@ public class TickedEvent {
         // checks every 5 ticks (yes i am inspired by sba)
         if (ticks % 5 == 0) {
             SecretUtils.getInventoryDiff(p.inventory.mainInventory);
+
             if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 10 && SecretModConfig.bazaarCaching) {
                 tickEventWatch.reset();
                 if (!tickEventWatch.isRunning()) tickEventWatch.start();
@@ -56,9 +60,11 @@ public class TickedEvent {
     }
 
     private boolean firstWorldLoad = false;
-
     @SubscribeEvent
     public void onSwitch(WorldEvent.Load event) {
+        AsyncAwait.start(() -> {
+            SecretUtils.setPreviousInventory(Arrays.asList(mc.thePlayer.inventory.mainInventory));
+        }, 100);
         if (!firstWorldLoad) {
             if (mc.theWorld == null) return;
 
@@ -71,7 +77,6 @@ public class TickedEvent {
                 }
             }, 1600);
         }
-        SecretUtils.setPreviousInventory(null);
     }
 
 }

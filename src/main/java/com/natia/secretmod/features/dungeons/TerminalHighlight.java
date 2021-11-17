@@ -39,43 +39,44 @@ public class TerminalHighlight {
             /* starting phase */
             if (event.message.getUnformattedText().startsWith("[BOSS] Necron: CRAP!! IT BROKE THE FLOOR!")) {
                 startChecks = true;
-            } else if (event.message.getUnformattedText().startsWith("[CHAT] [BOSS] Necron: LET'S GET TO THE FACTORY'S CORE!")) {
+            } else if (event.message.getUnformattedText().startsWith("[BOSS] Necron: LET'S GET TO THE FACTORY'S CORE!")) {
+                highlights.clear();
                 startChecks = false;
             }
         }
     }
 
-    @SubscribeEvent
-    public void onLoad(WorldEvent.Load event) {
-        startChecks = false;
-    }
-
+    int ticks = 0;
     @SubscribeEvent
     public void onBlockRender(DrawBlockHighlightEvent event) {
         if (!SecretModConfig.terminalHighlight) return;
         if (!startChecks) return;
+        ticks++;
 
         BlockPos playerPos = new BlockPos(mc.thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
-        new Thread(() -> {
-            SecretUtils.getBlocksInBox(mc.theWorld,
-                    new BlockPos(playerPos.getX() + 20, playerPos.getY() + 10, playerPos.getZ() + 20),
-                    new BlockPos(playerPos.getX() - 20, playerPos.getY() - 10, playerPos.getZ() - 20))
-                    .forEach((block, pos) -> {
-                        if (block.equals(Blocks.command_block)) {
-                            for (EntityArmorStand armorStand : mc.theWorld.getEntitiesWithinAABB(EntityArmorStand.class,
-                                    new AxisAlignedBB(pos.getX() + 3, pos.getY() + 1, pos.getZ() + 3,
-                                            pos.getX() - 3, pos.getY() - 1, pos.getZ() - 3))) {
-                                if (StringUtils.stripControlCodes(armorStand.getName()).contains("Inactive Terminal")) {
-                                    highlights.putIfAbsent(pos, true);
-                                    break;
-                                } else if (StringUtils.stripControlCodes(armorStand.getName()).contains("Terminal Active")) {
-                                    highlights.putIfAbsent(pos, false);
-                                    break;
+        if (ticks % 10 == 0) {
+            new Thread(() -> {
+                highlights.clear();
+                SecretUtils.getBlocksInBox(mc.theWorld,
+                        new BlockPos(playerPos.getX() + 30, playerPos.getY() + 10, playerPos.getZ() + 30),
+                        new BlockPos(playerPos.getX() - 30, playerPos.getY() - 10, playerPos.getZ() - 30))
+                        .forEach((block, pos) -> {
+                            if (block.equals(Blocks.command_block)) {
+                                for (EntityArmorStand armorStand : mc.theWorld.getEntitiesWithinAABB(EntityArmorStand.class,
+                                        new AxisAlignedBB(pos.getX() + 5, pos.getY() + 3, pos.getZ() + 5,
+                                                pos.getX() - 5, pos.getY() - 3, pos.getZ() - 5))) {
+                                    if (StringUtils.stripControlCodes(armorStand.getName()).startsWith("Inactive Terminal")) {
+                                        highlights.putIfAbsent(pos, true);
+                                        break;
+                                    } else if (StringUtils.stripControlCodes(armorStand.getName()).startsWith("Terminal Active")) {
+                                        highlights.putIfAbsent(pos, false);
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                    });
-        }).start();
+                        });
+            }).start();
+        }
 
         /* if true, is inactive. if false, is active */
         highlights.forEach((pos, highlightType) -> {
@@ -89,5 +90,6 @@ public class TerminalHighlight {
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load event) {
         highlights.clear();
+        startChecks = false;
     }
 }
