@@ -1,12 +1,9 @@
 package com.natia.secretmod.features;
 
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +19,8 @@ public class RepartyHook {
         return INSTANCE;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void checkIfReady(ClientChatReceivedEvent event) {
-        if (!SecretModConfig.rpCommand) return;
+    public void chat(ClientChatReceivedEvent event) {
+        if (!SkyTweaksConfig.rpCommand) return;
         /* reparty system */
         String message = event.message.getUnformattedText();
         if (cancelChats && message.startsWith("-----------------------------")) {
@@ -48,8 +44,7 @@ public class RepartyHook {
         }
     }
 
-    @SubscribeEvent
-    public void onSwitch(WorldEvent.Load event) {
+    public void worldLoad() {
         cancelChats = false;
     }
 }

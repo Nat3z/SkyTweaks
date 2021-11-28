@@ -25,7 +25,7 @@ public abstract class MixinGuiContainer {
     final Minecraft mc = Minecraft.getMinecraft();
     @Inject(method = "drawScreen", at = @At("RETURN"), cancellable = true)
     public void drawScreen(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
-        if (checkedChest) return;
+        /*if (checkedChest) return;
 
         if (mc.currentScreen instanceof GuiChest) {
             final List<ItemStack> itemStacks = this.inventorySlots.inventoryItemStacks;
@@ -34,9 +34,7 @@ public abstract class MixinGuiContainer {
             ContainerChest container = (ContainerChest) guiChest.inventorySlots;
             String name = StringUtils.stripControlCodes(container.getLowerChestInventory().getName());
 
-            /* will fix for multiple languages. */
             if (name.equalsIgnoreCase("Chest")) {
-                /* vanilla chest. */
                 itemStacks.forEach(itemStack -> {
                     if (itemStack != null && itemStack.getDisplayName() != null) {
 
@@ -45,7 +43,7 @@ public abstract class MixinGuiContainer {
 
                 checkedChest = true;
             }
-        }
+        }*/
     }
 
 }

@@ -12,8 +12,8 @@ public class BazaarHook {
     /* Sell Offer Setup! 1x Sugar Cane for 2.1 Coins. */
     /* Cancelled! Refunded 1x Raw Rabbit from cancelling sell offer! */
     Minecraft mc = Minecraft.getMinecraft();
-    @SubscribeEvent
-    public void onChat(ClientChatReceivedEvent event) {
+
+    public void chat(ClientChatReceivedEvent event) {
         String chat = event.message.getUnformattedText();
 
         if (chat.startsWith("Sell Offer Setup!")) {
@@ -54,6 +54,11 @@ public class BazaarHook {
         } else {
             return string;
         }
+    }
+
+    private static BazaarHook INSTANCE = new BazaarHook();
+    public static BazaarHook getInstance() {
+        return INSTANCE;
     }
 
 }

@@ -56,6 +56,7 @@ public class BaseViciousHUDEditor extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        mouseMove(mouseX, mouseY);
         drawRect(0, 0, this.width, this.height, new Color(17, 17, 17, 176).getRGB());
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -67,6 +68,7 @@ public class BaseViciousHUDEditor extends GuiScreen {
             if (moveableButtons.id == button.id) {
                 moving = true;
                 move = button.id;
+
                 for (Field variable : configItem.getConfig().getClass().getDeclaredFields()) {
                     if (variable.isAnnotationPresent(AddConfig.class)) {
                         AddConfig config = variable.getAnnotation(AddConfig.class);
@@ -84,28 +86,27 @@ public class BaseViciousHUDEditor extends GuiScreen {
         });
         super.actionPerformed(button);
     }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    private int lastMouseX = -1;
+    private int lastMouseY = -1;
+    private void mouseMove(int mouseX, int mouseY) {
         moveableButtonsMap.forEach((moveableButtons, configItem) -> {
-            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            float minecraftScale = sr.getScaleFactor();
-            float floatMouseX = Mouse.getX() / minecraftScale;
-            float floatMouseY = (Display.getHeight() - Mouse.getY()) / minecraftScale;
 
             if (moveableButtons.id == move) {
-                HudElement element = (HudElement) configItem.getValue();
+                int xMove = mouseX - lastMouseX;
+                int yMove = mouseY - lastMouseY;
 
+                moveableButtons.xPosition += xMove;
+                moveableButtons.yPosition += yMove;
+                HudElement element = (HudElement) configItem.getValue();
                 try {
-                    variable.set(configItem.getConfig(), new HudElement((int)floatMouseX, (int)floatMouseY, element.width, element.height));
+                    variable.set(configItem.getConfig(), new HudElement((int)moveableButtons.xPosition, (int)moveableButtons.yPosition, element.width, element.height));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-                moveableButtons.xPosition = (int) floatMouseX;
-                moveableButtons.yPosition = (int) floatMouseY;
             }
         });
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
     }
     Field variable = null;
     @Override

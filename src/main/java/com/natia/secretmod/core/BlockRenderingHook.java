@@ -1,16 +1,10 @@
 package com.natia.secretmod.core;
 
-import com.natia.secretmod.config.SecretModConfig;
-import com.natia.secretmod.utils.RenderUtils;
-import net.minecraft.block.BlockSkull;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import javax.vecmath.Vector3f;
-import java.awt.*;
 
 public class BlockRenderingHook {
 

@@ -28,8 +28,7 @@ public class AlertPickups {
     }
     private Minecraft mc = Minecraft.getMinecraft();
 
-    @SubscribeEvent
-    public void onPickup(ItemPickupEvent event) {
+    public void pickup(ItemPickupEvent event) {
         if (event.getItemDiff().getAmount() < 0) return;
         if (mc.currentScreen != null) return;
         System.out.println("Pickup - " + event.getItemDiff().getDisplayName());
@@ -37,6 +36,11 @@ public class AlertPickups {
             SecretUtils.playLoudSound("random.orb", 0.5f);
             SecretUtils.sendMessage(EnumChatFormatting.GOLD + "" + EnumChatFormatting.BOLD + "RARE DROP! " + EnumChatFormatting.RESET + event.getItemDiff().getDisplayName());
         }
+    }
+
+    private static AlertPickups INSTANCE = new AlertPickups();
+    public static AlertPickups getInstance() {
+        return INSTANCE;
     }
 
 }

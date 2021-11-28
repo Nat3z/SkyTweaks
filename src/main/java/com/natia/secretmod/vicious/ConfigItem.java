@@ -12,16 +12,36 @@ public class ConfigItem {
     private String[] sliderOptions;
     private String subCategory;
     private boolean uayor;
-    public ConfigItem(Field variable, String name, String description, String subCategory, String category, ConfigType type, boolean uayor, String[] sliderOptions, ViciousConfig config) {
+    private boolean hidden;
+
+    private int minAmount = 0;
+    private int maxAmount = 0;
+
+    public ConfigItem(Field variable, String name, String description, String subCategory, String category, ConfigType type, boolean uayor, String[] sliderOptions, boolean hidden, int minAmount, int maxAmount, ViciousConfig config) {
         this.name = name;
+        this.hidden = hidden;
         this.description = description;
         this.category = category;
         vtype = type;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
         this.config = config;
         var = variable;
         this.sliderOptions = sliderOptions;
         this.uayor = uayor;
         this.subCategory = subCategory;
+    }
+
+    public int getMinAmount() {
+        return minAmount;
+    }
+
+    public int getMaxAmount() {
+        return maxAmount;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     public String getSubCategory() {

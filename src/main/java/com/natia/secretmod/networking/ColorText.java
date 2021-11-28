@@ -1,9 +1,12 @@
 package com.natia.secretmod.networking;
 
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -39,18 +42,37 @@ public class ColorText {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void changeText(ClientChatReceivedEvent event) {
-        if (!SecretModConfig.colorCosmetic) return;
+        if (!SkyTweaksConfig.colorCosmetic) return;
         if (event.type == 0) {
+            IChatComponent sentComponent = event.message;
+
             if (!event.message.getUnformattedText().contains("-----------------")) {
-                String formattedText = event.message.getFormattedText();
+                String formattedText = sentComponent.getFormattedText();
 
                 for (String name : supporters) {
                     if (event.message.getUnformattedText().contains(name)) {
-                        event.message = getColor(formattedText, name);
-                        break;
+                        sentComponent = getColor(formattedText, name);
+                        formattedText = sentComponent.getFormattedText();
                     }
                 }
+
+                event.message = sentComponent;
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void modifyItemTooltip(ItemTooltipEvent event) {
+        if (!SkyTweaksConfig.colorCosmetic) return;
+        for (String tip : event.toolTip) {
+            String formattedTip = tip;
+            for (String name : supporters) {
+                if (StringUtils.stripControlCodes(tip).contains(name)) {
+                    formattedTip = getColor(formattedTip, name).getFormattedText();
+                }
+            }
+            event.toolTip.set(event.toolTip.indexOf(tip), formattedTip);
+
         }
     }
 
@@ -77,7 +99,7 @@ public class ColorText {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderTags(PlayerEvent.NameFormat event) {
-        if (!SecretModConfig.colorCosmetic) return;
+        if (!SkyTweaksConfig.colorCosmetic) return;
 
         if (supporters == null) return;
 

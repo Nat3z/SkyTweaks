@@ -1,11 +1,11 @@
 package com.natia.secretmod.config;
 
-import com.natia.secretmod.core.TickedEvent;
+import com.natia.secretmod.hooks.TickHook;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
-public class SecretModCommand extends CommandBase {
+public class SkyTweaksCommand extends CommandBase {
     /**
      * Gets the name of the command
      */
@@ -33,7 +33,7 @@ public class SecretModCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
 
-        TickedEvent.smHUD = true;
+        TickHook.smHUD = true;
     }
 
     @Override

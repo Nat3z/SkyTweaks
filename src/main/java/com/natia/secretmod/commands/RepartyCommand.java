@@ -1,8 +1,7 @@
 package com.natia.secretmod.commands;
 
 import com.natia.secretmod.SecretUtils;
-import com.natia.secretmod.config.SecretModConfig;
-import com.natia.secretmod.core.TickedEvent;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.features.RepartyHook;
 import com.natia.secretmod.utils.AsyncAwait;
 import net.minecraft.client.Minecraft;
@@ -12,7 +11,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,8 +47,8 @@ public class RepartyCommand extends CommandBase {
      */
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        if (SecretModConfig.rpCommand) {
-            mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[Secret Mod] " + EnumChatFormatting.GRAY + "Attempting to reparty members..."));
+        if (SkyTweaksConfig.rpCommand) {
+            SecretUtils.sendMessage("Attempting to reparty party members....");
             RepartyHook.getInstance().cancelChats = true;
             mc.thePlayer.sendChatMessage("/p list");
             AsyncAwait.start(() -> {
@@ -75,7 +73,7 @@ public class RepartyCommand extends CommandBase {
 
                     RepartyHook.getInstance().partyMembers.clear();
                     mc.thePlayer.sendChatMessage(command);
-                    }, 700);
+                    }, 1700);
             }, 1100);
         } else {
             SecretUtils.sendMessage("The feature 'Reparty Command' is not enabled.");

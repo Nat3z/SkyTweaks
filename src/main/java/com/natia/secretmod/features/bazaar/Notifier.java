@@ -23,8 +23,8 @@ public class Notifier {
 
     Stopwatch stopwatch = Stopwatch.createUnstarted();
     int tick = 0;
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+
+    public void tick() {
         if (mc.thePlayer == null) return;
         tick++;
 
@@ -57,6 +57,11 @@ public class Notifier {
             }
         }
 
+    }
+
+    private static Notifier INSTANCE = new Notifier();
+    public static Notifier getInstance() {
+        return INSTANCE;
     }
 
 }

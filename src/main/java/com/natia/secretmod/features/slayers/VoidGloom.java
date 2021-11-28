@@ -2,38 +2,23 @@ package com.natia.secretmod.features.slayers;
 
 import com.google.common.base.Stopwatch;
 import com.natia.secretmod.SecretUtils;
-import com.natia.secretmod.config.SecretModConfig;
-import com.natia.secretmod.core.BlockRenderingHook;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.utils.AsyncAwait;
 import com.natia.secretmod.utils.Location;
 import com.natia.secretmod.utils.RenderUtils;
 import com.natia.secretmod.vicious.HudElement;
-import com.sun.javafx.geom.Vec3f;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSkull;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.RenderBlockOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import javax.vecmath.Vector3f;
 import java.awt.*;
@@ -48,8 +33,9 @@ public class VoidGloom {
 
     private BlockPos range = new BlockPos(15, 0, 15);
 
+    private static VoidGloom INSTANCE = new VoidGloom();
     public static VoidGloom getInstance() {
-        return new VoidGloom();
+        return INSTANCE;
     }
 
     private boolean sendTitle = false;
@@ -63,12 +49,11 @@ public class VoidGloom {
 
     int yangGlyphsSpawned = 0;
 
-    @SubscribeEvent
-    public void onRender(DrawBlockHighlightEvent event) {
+    public void blockRender(DrawBlockHighlightEvent event) {
         BlockPos playerPos = new BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
-        if (!SecretModConfig.seraphHelper) return;
+        if (!SkyTweaksConfig.seraphHelper) return;
 
         /* is in void sepulture */
         AtomicBoolean foundBeacon = new AtomicBoolean(false);
@@ -112,7 +97,7 @@ public class VoidGloom {
                                         if (SecretUtils.withinRange(new BlockPos(30, 0, 30), e.getPosition(), playerPos)) {
                                             yangGlyphsSpawned++;
                                             Vector3f vec = new Vector3f(entity.getPosition().getX(), entity.getPosition().getY() + 1f, entity.getPosition().getZ());
-                                            RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, new Color(SecretModConfig.yangGlyphHighlightColor));
+                                            RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, new Color(SkyTweaksConfig.yangGlyphHighlightColor));
                                         }
 
                                     }
@@ -132,20 +117,20 @@ public class VoidGloom {
 
             .forEach((block, pos) -> {
                 if (block.equals(Blocks.beacon)) {
-                    if (SecretModConfig.beaconHighlights) {
+                    if (SkyTweaksConfig.beaconHighlights) {
                         beaconDown = true;
                         foundBeacon.set(true);
                         holdingBeacon = false;
 
-                        if (!sendTitle && (SecretModConfig.beaconHighlightType.equals("Both") || SecretModConfig.beaconHighlightType.equals("Notification Only"))) {
+                        if (!sendTitle && (SkyTweaksConfig.beaconHighlightType.equals("Both") || SkyTweaksConfig.beaconHighlightType.equals("Notification Only"))) {
                             title = "Exploding Beacon!";
                             sendTitle = true;
                         }
                         /* checks beacon highlight type */
-                        if ((SecretModConfig.beaconHighlightType.equals("Both") || SecretModConfig.beaconHighlightType.equals("Highlight Only"))) {
+                        if ((SkyTweaksConfig.beaconHighlightType.equals("Both") || SkyTweaksConfig.beaconHighlightType.equals("Highlight Only"))) {
                             Vector3f vec = new Vector3f(pos.getX(), pos.getY(), pos.getZ());
-                            RenderUtils.showBeam(vec, new Color(SecretModConfig.beaconHighlightColor), event.partialTicks);
-                            RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, new Color(SecretModConfig.beaconHighlightColor));
+                            RenderUtils.showBeam(vec, new Color(SkyTweaksConfig.beaconHighlightColor), event.partialTicks);
+                            RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, new Color(SkyTweaksConfig.beaconHighlightColor));
                         }
                     }
                 }
@@ -158,32 +143,31 @@ public class VoidGloom {
 
     private Stopwatch titleWatch = Stopwatch.createUnstarted();
 
-    @SubscribeEvent
-    public void onRender(TickEvent.RenderTickEvent event) {
+    public void render() {
         if (mc.currentScreen != null) return;
-        if (!SecretModConfig.seraphHelper) return;
+        if (!SkyTweaksConfig.seraphHelper) return;
         if (!slayerHealth.equals("")) {
             if (StringUtils.stripControlCodes(slayerHealth).endsWith(" 0❤")) {
                 slayerHealth = "";
                 return;
             }
-            HudElement hudElement = SecretModConfig.voidgloomHUD;
+            HudElement hudElement = SkyTweaksConfig.voidgloomHUD;
             /* boss health */
-            mc.fontRendererObj.drawString(EnumChatFormatting.BOLD + "BOSS: " +
-                    EnumChatFormatting.RESET + slayerHealth, hudElement.x, hudElement.y, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString(EnumChatFormatting.BOLD + "BOSS: ", hudElement.x, hudElement.y, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString(slayerHealth, hudElement.x + 30, hudElement.y, Color.white.getRGB(), true);
             /* beacon down */
-            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_AQUA + "" + EnumChatFormatting.BOLD +  "BEACON DOWN: " +
-                    EnumChatFormatting.RESET + (beaconDown ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x, hudElement.y + 10, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_AQUA + "" + EnumChatFormatting.BOLD +  "BEACON DOWN: ", hudElement.x, hudElement.y + 10, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString((beaconDown ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x + 90, hudElement.y + 10, Color.white.getRGB(), true);
             /* holding beacon */
-            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_AQUA + "" + EnumChatFormatting.BOLD +  "HOLDING BEACON: " +
-                    EnumChatFormatting.RESET + (holdingBeacon ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x, hudElement.y + 20, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_AQUA + "" + EnumChatFormatting.BOLD +  "BEACON HELD: ", hudElement.x, hudElement.y + 20, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString((holdingBeacon ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x + 90, hudElement.y + 20, Color.white.getRGB(), true);
             /* yang glyphs spawned */
-            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.BOLD +  "YANG GLYPHS SPAWNED: " +
-                    EnumChatFormatting.RESET + EnumChatFormatting.LIGHT_PURPLE + yangGlyphsSpawned, hudElement.x, hudElement.y + 30, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.BOLD +  "YANG GLYPHS: ", hudElement.x, hudElement.y + 30, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString("" + EnumChatFormatting.LIGHT_PURPLE + yangGlyphsSpawned, hudElement.x + 90, hudElement.y + 30, Color.white.getRGB(), true);
             /* is in hit phase */
             String unformattedSlayer = StringUtils.stripControlCodes(slayerHealth);
-            mc.fontRendererObj.drawString( EnumChatFormatting.RED + "" + EnumChatFormatting.BOLD + "HIT PHASE: " +
-                    EnumChatFormatting.RESET + (unformattedSlayer.contains("Hits") ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x, hudElement.y + 40, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString( EnumChatFormatting.RED + "" + EnumChatFormatting.BOLD + "HIT PHASE: ", hudElement.x, hudElement.y + 40, Color.white.getRGB(), true);
+            mc.fontRendererObj.drawString((unformattedSlayer.contains("Hits") ? EnumChatFormatting.GREEN + "YES" : EnumChatFormatting.RED + "NO"), hudElement.x + 90, hudElement.y + 40, Color.white.getRGB(), true);
         }
 
         if (sendTitle && !titleWatch.isRunning()) {
@@ -201,11 +185,10 @@ public class VoidGloom {
 
     private Stopwatch checkIfVoidgloomNearby = Stopwatch.createUnstarted();
 
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+    public void tick() {
         if (mc.theWorld == null) return;
 
-        if (!SecretModConfig.seraphHelper) return;
+        if (!SkyTweaksConfig.seraphHelper) return;
 
         if (Location.getCurrentLocation() == Location.VOID_SEPULTURE || Location.getCurrentLocation() == Location.THE_END) {
             AsyncAwait.until(() -> {
@@ -237,8 +220,7 @@ public class VoidGloom {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void worldLoad(WorldEvent.Load event) {
+    public void worldLoad() {
         if (titleWatch.isRunning()) titleWatch.reset();
         title = "";
         slayerHealth = "";

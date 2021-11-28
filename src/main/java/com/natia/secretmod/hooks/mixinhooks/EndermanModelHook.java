@@ -1,18 +1,13 @@
-package com.natia.secretmod.hooks;
+package com.natia.secretmod.hooks.mixinhooks;
 
-import com.natia.secretmod.SecretUtils;
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.features.slayers.VoidGloom;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.awt.*;
 
 public class EndermanModelHook {
 
@@ -41,8 +36,8 @@ public class EndermanModelHook {
     }*/
 
     public static void overrideTexture(Entity entity, CallbackInfoReturnable<ResourceLocation> cir) {
-        if (!SecretModConfig.seraphHelper) return;
-        if (!SecretModConfig.seraphColorize) return;
+        if (!SkyTweaksConfig.seraphHelper) return;
+        if (!SkyTweaksConfig.seraphColorize) return;
         if (VoidGloom.slayerHealth.isEmpty()) return;
         String entityName = StringUtils.stripControlCodes(entity.getName());
 

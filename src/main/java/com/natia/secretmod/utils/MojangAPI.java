@@ -15,4 +15,13 @@ public class MojangAPI {
         return username.get();
     }
 
+    public static String usernameToUUID(String username) {
+        AtomicReference<String> uuid = new AtomicReference<>("");
+        fetch("https://api.mojang.com/users/profiles/minecraft/" + username, res -> {
+            uuid.set(res.asJson().get("id").getAsString());
+        });
+
+        return uuid.get();
+    }
+
 }

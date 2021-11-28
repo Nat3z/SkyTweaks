@@ -105,7 +105,7 @@ public class ViciousMod {
             if (variable.isAnnotationPresent(AddConfig.class)) {
                 AddConfig cfg = variable.getAnnotation(AddConfig.class);
 
-                configItemList.add(new ConfigItem(variable, cfg.name(), cfg.description(), cfg.subCategory(), cfg.category(), cfg.type(), cfg.UAYOR(), cfg.sliderChoices(), getConfig()));
+                configItemList.add(new ConfigItem(variable, cfg.name(), cfg.description(), cfg.subCategory(), cfg.category(), cfg.type(), cfg.UAYOR(), cfg.sliderChoices(), cfg.hidden(), cfg.minAmount(), cfg.maxAmount(), getConfig()));
             }
         }
 

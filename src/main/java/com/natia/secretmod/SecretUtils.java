@@ -1,6 +1,5 @@
 package com.natia.secretmod;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -8,43 +7,32 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.core.ItemPickupEvent;
-import com.natia.secretmod.core.TickedEvent;
-import com.natia.secretmod.utils.FileUtils;
-import com.natia.secretmod.utils.ItemDiff;
-import com.natia.secretmod.utils.Location;
-import com.natia.secretmod.utils.RenderUtils;
+import com.natia.secretmod.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-import javax.vecmath.Vector3f;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +49,7 @@ public class SecretUtils {
     public static TileEntitySign CURRENT_SIGN;
 
     public static void sendMessage(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.AQUA + "[SkyTweaks] " + EnumChatFormatting.WHITE + message));
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.AQUA + "[SkyTweaks] " + EnumChatFormatting.YELLOW + message));
     }
 
     public static boolean isValid() {
@@ -123,7 +111,7 @@ public class SecretUtils {
         // Get profiles
         System.out.println("Fetching profiles...");
         System.out.println(UUID);
-        fetch("https://api.hypixel.net/skyblock/profiles?uuid=" + UUID + "&key=" + key, res -> {
+        fetch("https://api.hypixel.net/skyblock/profiles?key=" + key + "&uuid=" + UUID, res -> {
             JsonObject profilesResponse = res.asJson();
             if (!profilesResponse.get("success").getAsBoolean()) {
                 String reason = profilesResponse.get("cause").getAsString();
@@ -360,6 +348,16 @@ public class SecretUtils {
     }
 
     /**
+     * Generates an Empty Runnable. Useful for SkyblockTimers
+     * @author NatiaDev
+     */
+    public static Runnable generateEmptyRunnable() {
+        return () -> {
+
+        };
+    }
+
+    /**
      * @author NatiaDev
      * Simulates a title and sends it to client.
      * @param message
@@ -381,10 +379,24 @@ public class SecretUtils {
             );
     }
 
+    /**
+     * Allows you to bind a color to entities, blocks, whatever you want!
+     * @author NatiaDev
+     * @param color
+     */
     public static void bindColor(Color color) {
         GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
     }
 
+    /**
+     * Draws a centered string on the screen based on text length
+     * @author NatiaDev ext. Minecraft
+     * @param text
+     * @param x
+     * @param y
+     * @param color
+     * @param scale
+     */
     public static void drawCenteredString(String text, int x, int y, int color, double scale) {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1);
@@ -399,4 +411,132 @@ public class SecretUtils {
         if (!folder.exists()) folder.mkdir();
         return folder;
     }
+
+    public static double calcArbitraryDamage(double strength, double critDamage, double additiveMultipliers, double weaponDamage) {
+        return (5 + weaponDamage) * (1 + strength/100) * (1 + critDamage / 100) * (1 + additiveMultipliers / 100);
+    }
+
+    private static List<Double> cachedStats = new ArrayList<>();
+    private static Map<String, Double> enchantsAdditivesEnderman = new HashMap<>();
+    private static Map<String, Double> enchantAdditives = new HashMap<>();
+
+    public static void addEnchantAdditives() {
+        if (enchantsAdditivesEnderman.isEmpty()) {
+            /* if someone can make this more optimized, please do :D */
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer I", 0.12);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer II", 0.24);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer III", 0.36);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer IV", 0.48);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer V", 0.60);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer VI", 0.72);
+            enchantsAdditivesEnderman.putIfAbsent("Ender Slayer VII", 0.84);
+
+            enchantAdditives.putIfAbsent("First Strike I", 0.25);
+            enchantAdditives.putIfAbsent("First Strike II", 0.5);
+            enchantAdditives.putIfAbsent("First Strike III", 0.75);
+            enchantAdditives.putIfAbsent("First Strike IV", 1d);
+            enchantAdditives.putIfAbsent("First Strike V", 1.25);
+
+            enchantAdditives.putIfAbsent("Sharpness I", 0.05);
+            enchantAdditives.putIfAbsent("Sharpness II", 0.1);
+            enchantAdditives.putIfAbsent("Sharpness III", 0.15);
+            enchantAdditives.putIfAbsent("Sharpness IV", 0.2);
+            enchantAdditives.putIfAbsent("Sharpness V", 0.25);
+            enchantAdditives.putIfAbsent("Sharpness VI", 0.3);
+            enchantAdditives.putIfAbsent("Sharpness VII", 0.35);
+        }
+    }
+
+    public static double calcCurrentDamage(String name, Entity entityDamaged) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (cachedStats.isEmpty()) {
+            AtomicReference<String> latest = new AtomicReference<>("");
+            fetch("https://sky.shiiyu.moe/api/v2/profile/" + name, res -> {
+                if (res == null) return;
+                JsonObject jsonObject = res.asJson().get("profiles").getAsJsonObject();
+                Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
+                for (Map.Entry<String,JsonElement> entry : entrySet) {
+                    if (entry.getValue().getAsJsonObject().get("current").getAsBoolean()) {
+                        latest.set(entry.getKey());
+                        break;
+                    }
+                }
+            });
+            if (latest.get().equals("")) return -404;
+
+            fetch("https://sky.shiiyu.moe/api/v2/profile/" + name, res -> {
+                JsonObject profileData = res.asJson().getAsJsonObject("profiles").getAsJsonObject(latest.get()).get("data").getAsJsonObject();
+
+                double critDamage = profileData.getAsJsonObject("stats").get("crit_damage").getAsDouble();
+                double strength = profileData.getAsJsonObject("stats").get("strength").getAsDouble();
+                double additive = profileData.getAsJsonObject("stats").get("damage_increase").getAsDouble();
+
+                cachedStats.add(strength);
+                cachedStats.add(critDamage);
+                cachedStats.add(additive);
+            });
+        }
+        double itemdamage = 0;
+        double itemcritDamage = 0;
+        double itemStrength = 0;
+        final double[] itemAdditive = {0};
+
+        for (String line : ItemUtils.getLore(mc.thePlayer.getHeldItem())) {
+            line = StringUtils.stripControlCodes(line);
+
+            if (line.startsWith("Damage:")) {
+                try {
+                    itemdamage = Double.parseDouble(line.split(" ")[1].replace("+", ""));
+                } catch (NumberFormatException ex) {
+                    itemdamage = 0;
+                }
+            } else if (line.startsWith("Strength")) {
+                try {
+                    itemStrength = Double.parseDouble(line.split(" ")[1].replace("+", ""));
+                } catch (NumberFormatException ex) {
+                    itemStrength = 0;
+                }
+            } else if (line.startsWith("Crit Damage")) {
+                try {
+                    itemcritDamage = Double.parseDouble(line.split(" ")[2].replace("+", "").replace("%", ""));
+                } catch (NumberFormatException ex) {
+                    itemcritDamage = 0;
+                }
+            }
+
+            else if (line.contains(",")) {
+
+                String[] enchants = line.split(",");
+                for (String enchant : enchants) {
+                    if (enchant.startsWith(" ")) enchant = enchant.replaceFirst(" ", "");
+                    final String enchantFinal = StringUtils.stripControlCodes(enchant);
+
+                    if (entityDamaged instanceof EntityEnderman)
+                        enchantsAdditivesEnderman.forEach((theEnchant, additive) -> {
+                            if (enchantFinal.startsWith(theEnchant)) {
+                                itemAdditive[0] += additive;
+                            }
+                        });
+
+
+                    enchantAdditives.forEach((theEnchant, additive) -> {
+                        if (theEnchant.contains("First Strike") && SkyTweaksConfig.assumeFirstStrike) {
+                            if (enchantFinal.startsWith(theEnchant)) {
+                                itemAdditive[0] += additive;
+                            }
+                        } else if (!theEnchant.contains("First Strike"))
+                            if (enchantFinal.startsWith(theEnchant)) {
+                                itemAdditive[0] += additive;
+                            }
+                    });
+                }
+            }
+        }
+
+        if (StringUtils.stripControlCodes(mc.thePlayer.getHeldItem().getDisplayName()).contains("Fabled")) {
+            itemAdditive[0] += 1;
+        }
+        return calcArbitraryDamage(cachedStats.get(0) + itemStrength, cachedStats.get(1) + itemcritDamage, cachedStats.get(2) + itemAdditive[0], itemdamage);
+    }
+
 }

@@ -18,4 +18,8 @@ public @interface AddConfig {
     boolean requiresElementToggled() default true;
     String requiredElementToggled() default "";
     boolean UAYOR();
+    boolean hidden() default false;
+
+    int minAmount() default 0;
+    int maxAmount() default 0;
 }

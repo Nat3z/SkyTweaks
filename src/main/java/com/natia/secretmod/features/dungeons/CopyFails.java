@@ -1,13 +1,10 @@
 package com.natia.secretmod.features.dungeons;
 
 import com.natia.secretmod.SecretUtils;
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.utils.Location;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -15,9 +12,11 @@ import java.awt.datatransfer.StringSelection;
 
 public class CopyFails {
     Minecraft mc = Minecraft.getMinecraft();
-    @SubscribeEvent
-    public void onMessage(ClientChatReceivedEvent event) {
-        if (!SecretModConfig.copyFails) return;
+
+    public void chat(ClientChatReceivedEvent event) {
+        if (!SkyTweaksConfig.copyFails) return;
+        if (SecretUtils.isInDungeons() != Location.THE_CATACOMBS) return;
+
         String message = event.message.getUnformattedText();
         if (message.contains(": "))
             return;
@@ -35,6 +34,11 @@ public class CopyFails {
                 SecretUtils.sendMessage("Fail copied!");
             }
         }
+    }
+
+    private static CopyFails INSTANCE = new CopyFails();
+    public static CopyFails getInstance() {
+        return INSTANCE;
     }
 
 }

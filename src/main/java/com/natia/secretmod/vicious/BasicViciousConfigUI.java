@@ -1,9 +1,11 @@
 package com.natia.secretmod.vicious;
 
+import com.natia.secretmod.hooks.TickHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
@@ -23,6 +25,7 @@ public class BasicViciousConfigUI extends GuiScreen {
     ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
 
     private String currentCategory;
+    private int clickHUD = 0;
 
     List<Category> categories = new ArrayList<>();
     List<Object> cfgButtons = new ArrayList<>();
@@ -57,15 +60,16 @@ public class BasicViciousConfigUI extends GuiScreen {
         for (ConfigItem items : configItems) {
             modnum += 1;
             if (!items.getCategory().equals(currentCategory)) continue;
+            if (items.isHidden()) continue;
             heightlen += 0.11;
 
             if (items.getType() == ConfigType.TOGGLE) {
                 Button button;
                 if ((boolean)items.getValue()) {
-                    button = new Button(modnum, (int) (width / 2 * 1.6), (int) (height * heightlen), 30, 10, toggle_on, null);
+                    button = new Button(modnum, (int) (width / 2 * 1.54) + 20, (int) (height * heightlen), 30, 10, toggle_on, null);
                 } else {
                     // off
-                    button = new Button(modnum, (int) (width / 2 * 1.6), (int) (height * heightlen), 30, 10, toggle_off, null);
+                    button = new Button(modnum, (int) (width / 2 * 1.54) + 20, (int) (height * heightlen), 30, 10, toggle_off, null);
                 }
 
                 if (!categoryList.containsKey(items.getSubCategory())) {
@@ -77,7 +81,8 @@ public class BasicViciousConfigUI extends GuiScreen {
             }
 
             if (items.getType() == ConfigType.INPUT_FIELD) {
-                GuiTextField textField = new GuiTextField(modnum, fontRendererObj, (int) (width / 2 * 1.6), (int) (height * heightlen), 80, 15);
+                GuiTextField textField = new GuiTextField(modnum, fontRendererObj, (int) (width / 2 * 1.54), (int) (height * heightlen), 80, 15);
+                textField.setMaxStringLength(1000000000);
                 textField.setText((String) items.getValue());
                 if (!categoryList.containsKey(items.getSubCategory())) {
                     textField.yPosition += 30; heightlen += 0.08;
@@ -87,11 +92,9 @@ public class BasicViciousConfigUI extends GuiScreen {
             }
 
             if (items.getType() == ConfigType.COLOR_WHEEL) {
-                Button button = new Button(modnum, (int) (width / 2 * 1.6), (int) (height * heightlen), 30, 10, color_switch, null);
+                Button button = new Button(modnum, (int) (width / 2 * 1.54) + 20, (int) (height * heightlen), 30, 10, color_switch, null);
                 if (!categoryList.containsKey(items.getSubCategory())) {
                     button.yPosition += 30; heightlen += 0.08;
-                } else {
-
                 }
                 categoryList.putIfAbsent(items.getSubCategory(), new ArrayList<>());
                 categoryList.get(items.getSubCategory()).add(button);
@@ -99,8 +102,20 @@ public class BasicViciousConfigUI extends GuiScreen {
 
             if (items.getType() == ConfigType.SLIDER_TEXT) {
                 List<String> array = Arrays.asList(items.getSliderOptions());
-                TextSlider optionSlider = new TextSlider(modnum, (int) (width / 2 * 1.6), (int) (height * heightlen),
+                TextSlider optionSlider = new TextSlider(modnum, (int) (width / 2 * 1.54), (int) (height * heightlen),
                         80, 20, "", "", 1, array.size(), array.indexOf(items.getValue()) + 1, false, true, null, items.getSliderOptions());
+                optionSlider.displayString = (String) items.getValue();
+                if (!categoryList.containsKey(items.getSubCategory())) {
+                    optionSlider.yPosition += 30; heightlen += 0.08;
+                }
+                categoryList.putIfAbsent(items.getSubCategory(), new ArrayList<>());
+                categoryList.get(items.getSubCategory()).add(optionSlider);
+            }
+
+            if (items.getType() == ConfigType.INTEGER_SLIDER) {
+                List<String> array = Arrays.asList(items.getSliderOptions());
+                IntegerSlider optionSlider = new IntegerSlider(modnum, (int) (width / 2 * 1.54), (int) (height * heightlen),
+                        80, 20, items.getMinAmount(), items.getMaxAmount(), (int) items.getValue(), false, true, null);
                 optionSlider.displayString = (String) items.getValue();
                 if (!categoryList.containsKey(items.getSubCategory())) {
                     optionSlider.yPosition += 30; heightlen += 0.08;
@@ -140,6 +155,8 @@ public class BasicViciousConfigUI extends GuiScreen {
             maxSectionOffset = mo;
         }
 
+        clickHUD = 190;
+        buttonList.add(new MoveableButtons(clickHUD, 20, 45, 150, 20, "Edit Gui Locations", false));
     }
     public void drawString(String text, int x, int y, int color, int scale) {
         GlStateManager.pushMatrix();
@@ -181,15 +198,13 @@ public class BasicViciousConfigUI extends GuiScreen {
             int width = scaledResolution.getScaledWidth();
             int height = scaledResolution.getScaledHeight();
 
-            int xSize = Math.min(width-100/scaledResolution.getScaleFactor(), 500);
-            int ySize = Math.min(height-100/scaledResolution.getScaleFactor(), 500);
-
-            int x2 = (scaledResolution.getScaledWidth() - xSize)/2;
-            int y2 = (scaledResolution.getScaledWidth() - ySize)/2;
+            int x2 = (scaledResolution.getScaledWidth() / 2)/3 - 50;
             GlStateManager.enableBlend();
 
             Minecraft.getMinecraft().getTextureManager().bindTexture(Menu);
-            Gui.drawModalRectWithCustomSizedTexture(x2 / 2, (int) (height * 0.20), 0, 0, (int) (width / 2) + 250,  (int) (height / 1.3), 356, 267);
+            int textureWidth = (int) (width) - 80;
+            int textureHeight =  (int) (height / 1.3);
+            Gui.drawModalRectWithCustomSizedTexture(x2 / 2, (int) (height * 0.20), 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
 
             super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -199,7 +214,9 @@ public class BasicViciousConfigUI extends GuiScreen {
 
             for (Category category : categories) {
                 if (category.dynamicOffset > height * 0.33 && category.dynamicOffset < (height - 50)) {
-                    drawCenteredString(category.getName(), x2 / 2 + 130, category.dynamicOffset / 2 - 15, new Color(28, 209, 70).getRGB(), 2);
+                    ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+                    int widthX32 = sr.getScaledWidth();
+                    drawCenteredString(category.getName().replace("(UAYOR)", EnumChatFormatting.RED + "(UAYOR)"), (widthX32 / 2) / 2, category.dynamicOffset / 2 - 15, new Color(28, 209, 70).getRGB(), 2);
                 }
                 if (category.getConfigs().get(0) instanceof GuiButton)
                     id = ((GuiButton) category.getConfigs().get(0)).id - 1;
@@ -307,6 +324,12 @@ public class BasicViciousConfigUI extends GuiScreen {
             }
         }
 
+        if (button.id == clickHUD) {
+            TickHook.scheduleGui(new BaseViciousHUDEditor(arcticModule));
+            mc.thePlayer.closeScreen();
+            return;
+        }
+
         if (button instanceof Button && ((Button) button).textureResource == color_switch) {
             hoverid = button.id;
             currentColor = (int) configItems.get(button.id).getValue();
@@ -370,6 +393,14 @@ public class BasicViciousConfigUI extends GuiScreen {
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
+                } else if (o instanceof IntegerSlider) {
+                    IntegerSlider slider = (IntegerSlider) o;
+                    ConfigItem item = configItems.get(slider.id);
+                    try {
+                        item.getField().set(item.getConfig(), slider.displayString);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                 } else if (o instanceof GuiTextField) {
                     GuiTextField field = (GuiTextField) o;
                     ConfigItem item = configItems.get(field.getId());
@@ -409,7 +440,7 @@ public class BasicViciousConfigUI extends GuiScreen {
                                 try {
                                     variable.set(arcticModule.getConfig(), selectedColor.getRGB());
                                     ConfigItem configItem = configItems.get(hoverid);
-                                    configItems.set(hoverid, new ConfigItem(variable, configItem.getName(), configItem.getDescription(), configItem.getCategory(), configItem.getSubCategory(), configItem.getType(), configItem.shouldUseAtOwnRisk(), configItem.getSliderOptions(), configItem.getConfig()));
+                                    configItems.set(hoverid, new ConfigItem(variable, configItem.getName(), configItem.getDescription(), configItem.getCategory(), configItem.getSubCategory(), configItem.getType(), configItem.shouldUseAtOwnRisk(), configItem.getSliderOptions(), configItem.isHidden(), configItem.getMinAmount(), configItem.getMaxAmount(), configItem.getConfig()));
                                     hoverid = -1;
                                     showColorWheel = false;
 

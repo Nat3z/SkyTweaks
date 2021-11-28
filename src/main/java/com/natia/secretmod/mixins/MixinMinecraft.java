@@ -2,13 +2,23 @@ package com.natia.secretmod.mixins;
 
 import com.natia.secretmod.SkyTweaks;
 import com.natia.secretmod.SecretUtils;
+import com.natia.secretmod.features.DamagePerSecond;
+import com.natia.secretmod.features.TimersHook;
+import com.natia.secretmod.features.fishing.WormCounter;
+import com.natia.secretmod.features.fishing.WormTimer;
+import com.natia.secretmod.features.slayers.RNGesusBar;
+import com.natia.secretmod.features.slayers.VoidGloom;
 import com.natia.secretmod.utils.FileUtils;
 import com.natia.secretmod.utils.FrameMaker;
 import com.natia.secretmod.utils.ModAssistantHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfiguration;
+import net.minecraft.crash.CrashReport;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,8 +39,9 @@ import static com.natia.secretmod.utils.WebUtils.fetch;
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
 
-    private Method replaceMethod;
-    private Object instance;
+    @Shadow @Final private static Logger logger;
+
+    @Shadow public abstract void displayCrashReport(CrashReport crashReportIn);
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void init(GameConfiguration gameConfig, CallbackInfo ci) {
@@ -58,7 +69,7 @@ public abstract class MixinMinecraft {
         if (subMods.exists()) {
             modsFolder = subMods;
         }
-        ModAssistantHook.openLauncher(modsFolder);
+        //ModAssistantHook.openLauncher(modsFolder);
         /* check for updates & auto update */
         File finalModsFolder = modsFolder;
         fetch("https://api.github.com/repos/Nat3z/SkyTweaks/releases/latest", res -> {
@@ -140,6 +151,14 @@ public abstract class MixinMinecraft {
             }
         });
     }
+
+    /* shutdown */
+    @Inject(method = "shutdownMinecraftApplet", at = @At("HEAD"))
+    public void shutdownMinecraftApplet(CallbackInfo ci) {
+        this.logger.info("Saving SkyTweaks Config Before Shutdown...");
+        SkyTweaks.configHandler.saveConfig();
+    }
+
     private static boolean isRedirected(Map<String, List<String>> header) {
         for( String hv : header.get( null )) {
             if(   hv.contains( " 301 " )

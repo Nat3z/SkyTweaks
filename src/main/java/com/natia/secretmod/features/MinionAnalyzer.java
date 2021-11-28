@@ -1,18 +1,15 @@
 package com.natia.secretmod.features;
 
 import com.natia.secretmod.SecretUtils;
-import com.natia.secretmod.config.SecretModConfig;
+import com.natia.secretmod.config.SkyTweaksConfig;
 import com.natia.secretmod.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -25,6 +22,7 @@ public class MinionAnalyzer {
     private double moneyInMinion = 0;
 
     List<Integer> invalidSlots = new ArrayList<>();
+
     public MinionAnalyzer() {
         invalidSlots.add(3);
         invalidSlots.add(4);
@@ -39,9 +37,8 @@ public class MinionAnalyzer {
         invalidSlots.add(53);
     }
 
-    @SubscribeEvent
-    public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!SecretModConfig.minionAnalyzer) return;
+    public void backgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event) {
+        if (!SkyTweaksConfig.minionAnalyzer) return;
         if (mc.theWorld == null) return;
         if (!SecretUtils.isValid()) return;
         moneyInMinion = 0;
@@ -84,6 +81,11 @@ public class MinionAnalyzer {
                 GL11.glTranslated(0, 0, -1);
             }
         }
+    }
+
+    private static MinionAnalyzer INSTANCE = new MinionAnalyzer();
+    public static MinionAnalyzer getInstance() {
+        return INSTANCE;
     }
 
 }

@@ -1,17 +1,17 @@
 package com.natia.secretmod.config;
 
-import com.natia.secretmod.core.TickedEvent;
+import com.natia.secretmod.hooks.TickHook;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
-public class SecretModHUD extends CommandBase {
+public class SkyTweaksHUD extends CommandBase {
     /**
      * Gets the name of the command
      */
     @Override
     public String getCommandName() {
-        return "sm";
+        return "skytweaks";
     }
 
     /**
@@ -21,7 +21,7 @@ public class SecretModHUD extends CommandBase {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/sm";
+        return "/skytweaks";
     }
 
     /**
@@ -32,7 +32,7 @@ public class SecretModHUD extends CommandBase {
      */
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        TickedEvent.smGui = true;
+        TickHook.smGui = true;
     }
 
     @Override
