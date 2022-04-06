@@ -22,7 +22,7 @@ shadowJar {
 }
 ```
 
-Then, you create a new class that extends to the `com.natia.secretmod.extensions.Extension` class.
+Then, you create a new class that extends to the `Extension` class.
 
 Almost done! Once you have done that, in your `preInit(FMLPreInitializationEvent)` method, add the following lines:
 ```java

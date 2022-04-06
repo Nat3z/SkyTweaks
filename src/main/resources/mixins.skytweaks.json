@@ -1,0 +1,15 @@
+{
+  "package": "mixin.natia.skytweaks.mixins",
+  "refmap": "mixins.skytweaks.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixinPriority": 9999,
+  "priority": 9999,
+  "minVersion": "0.6",
+  "mixins": [
+    "MixinEndermanRender",
+    "MixinGuiEditSign",
+    "MixinMinecraft",
+    "MixinRenderManager",
+    "MixinNewChat"
+  ]
+}
