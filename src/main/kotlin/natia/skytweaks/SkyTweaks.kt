@@ -77,8 +77,8 @@ class SkyTweaks {
 
     companion object {
         const val MODID: String = "skytweaks-mod"
-        const val VERSION = "v1.0.4"
-        const val IS_UNSTABLE = true
+        const val VERSION = "v1.0.5"
+        const val IS_UNSTABLE = false
         @JvmField
         val LOGGER: Logger = LogManager.getLogger("SkyTweaks Logger")!!
 
