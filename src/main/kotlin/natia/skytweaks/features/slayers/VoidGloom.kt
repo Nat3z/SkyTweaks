@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 import net.minecraft.util.*
 import net.minecraftforge.client.event.DrawBlockHighlightEvent
+import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.common.util.Constants
 
 import javax.vecmath.Vector3f
@@ -41,7 +42,7 @@ class VoidGloom {
 
     private val checkIfVoidgloomNearby = Stopwatch.createUnstarted()
 
-    fun blockRender(event: DrawBlockHighlightEvent) {
+    fun blockRender(event: RenderWorldLastEvent) {
         val playerPos = BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ)
         val world = Minecraft.getMinecraft().theWorld ?: return
         if (!SkyTweaksConfig.seraphHelper) return
