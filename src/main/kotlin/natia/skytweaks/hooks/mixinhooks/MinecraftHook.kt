@@ -1,25 +1,26 @@
 package natia.skytweaks.hooks.mixinhooks
 
-import natia.skytweaks.utils.FileUtils
 import natia.skytweaks.SecretUtils
 import natia.skytweaks.SkyTweaks
+import natia.skytweaks.utils.FileUtils
 import natia.skytweaks.utils.FrameMaker
 import natia.skytweaks.utils.ModAssistantHook
+import natia.skytweaks.utils.WebUtils.fetch
 import net.minecraft.client.main.GameConfiguration
 import net.minecraftforge.fml.common.FMLCommonHandler
 import org.lwjgl.opengl.Display
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
-
-import javax.swing.*
-import java.awt.*
-import java.io.*
+import java.awt.Dimension
+import java.awt.event.ActionListener
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-
-import natia.skytweaks.utils.WebUtils.fetch
-import java.awt.event.ActionListener
+import java.util.regex.Pattern
+import javax.swing.WindowConstants
 
 object MinecraftHook {
     private var updatePreperations = arrayOfNulls<Any>(5)
@@ -64,6 +65,15 @@ object MinecraftHook {
                 SkyTweaks.LOGGER.info("Applying update to SkyTweaks...")
                 fetch("https://api.github.com/repos/Nat3z/SkyTweaks/releases") { res1 ->
                     val downloadURL = res1.asJsonArray().get(0).getAsJsonObject().get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString()
+                    val body = res1.asJsonArray().get(0).getAsJsonObject().get("body").getAsString()
+                    var hashID: String = ""
+                    if (body.contains("**SHA-256 Hash:** `")) {
+                        SkyTweaks.LOGGER.info(body.split("**SHA-256 Hash:** `"))
+                        hashID =
+                            body.split("Hash:** `")[1].split("`")[0]
+                    }
+                    SkyTweaks.LOGGER.info(hashID)
+
                     SkyTweaks.LOGGER.info("Prepared update for SkyTweaks.")
                     var updateAs = ""
                     /* for glass mod implementation */
@@ -78,7 +88,7 @@ object MinecraftHook {
 
                     }
                     SecretUtils.preparedupate = true
-                    updatePreperations = arrayOf<Any?>("https://api.github.com/repos/Nat3z/SkyTweaks/releases", downloadURL, finalModsFolder, updateAs, updateAs)
+                    updatePreperations = arrayOf<Any?>("https://api.github.com/repos/Nat3z/SkyTweaks/releases", downloadURL, finalModsFolder, updateAs, updateAs, hashID)
                 }
             } else if (SkyTweaks.VERSION != res.asJsonArray().get(1).getAsJsonObject().get("tag_name").getAsString() && res.asJsonArray().get(1).getAsJsonObject().get("prerelease").asBoolean) {
                 /* update that mod! */
@@ -162,7 +172,7 @@ object MinecraftHook {
             Display.destroy()
             SkyTweaks.LOGGER.info("Starting SkyTweaks update...")
             ModAssistantHook.open(updatePreperations[0] as String, updatePreperations[1] as String,
-                updatePreperations[2] as File, updatePreperations[3] as String, updatePreperations[4] as String)
+                updatePreperations[2] as File, updatePreperations[3] as String, updatePreperations[4] as String, updatePreperations[5] as String)
         }
     }
 

@@ -54,6 +54,14 @@ Congratulations! You have successfully added the SkyTweaks ExtensionsAPI into yo
 - /smhud - Command to change positions of hud elements.
 - /rp - Command to start the reparty hook.
 
+# How to use SHA256 Hash
+Automatically, the SHA256 hash of each update is verified by Mod Assistant. If you wish to manually verify, use this website and compare the output hash with the hash provided in the update changelog.
+
+[SHA256 Checksum Tool](https://emn178.github.io/online-tools/sha256_checksum.html)
+
+## Mod Assistant Verification
+Mod Assistant automatically grabs the SHA-256 hash of each update and when downloaded, checks the hash of the updated jar file and makes sure that the update file is the one provided in the changelog.
+
 # Open Sourced
 SkyTweaks is open source and because of this it uses code from open source programs! Below is a list of open source programs used to develop **SkyTweaks**!
 

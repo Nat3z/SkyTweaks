@@ -1,6 +1,7 @@
 package natia.skytweaks.hooks
 
 import natia.skytweaks.features.RepartyHook
+import natia.skytweaks.features.bazaar.BazaarHook
 import natia.skytweaks.features.dungeons.BonzoSpiritHook
 import natia.skytweaks.features.dungeons.CopyFails
 import natia.skytweaks.features.fishing.WormCounter
@@ -26,6 +27,6 @@ class MessageHook {
         CopyFails.instance.chat(event)
         CopyRNG.instance.chat(event)
         //TerminalHighlight.getInstance().chat(event);
-        //BazaarHook.getInstance().chat(event);
+        BazaarHook.instance.chat(event);
     }
 }

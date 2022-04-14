@@ -6,6 +6,7 @@ import natia.skytweaks.features.slayers.VoidGloom
 import net.minecraftforge.client.event.DrawBlockHighlightEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent
+import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class WorldHook {
@@ -24,7 +25,9 @@ class WorldHook {
         //TerminalHighlight.getInstance().blockRender(event);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(
+        priority = EventPriority.HIGHEST
+    )
     fun onWorldRender(event: RenderWorldLastEvent) {
         VoidGloom.instance.blockRender(event)
     }

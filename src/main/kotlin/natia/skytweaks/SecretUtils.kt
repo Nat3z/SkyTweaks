@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap
 import com.google.gson.JsonObject
 import mixin.natia.skytweaks.SkyTweaksConfig
 import natia.skytweaks.core.ItemPickupEvent
+import natia.skytweaks.features.bazaar.BazaarAverage
 import natia.skytweaks.utils.*
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
@@ -29,6 +30,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import java.util.regex.Pattern
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 
 object SecretUtils {
 
@@ -190,12 +192,36 @@ object SecretUtils {
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(ChatComponentText(EnumChatFormatting.AQUA.toString() + "[SkyTweaks] " + EnumChatFormatting.RED + message))
     }
 
+    public val allcachedBazaar: MutableList<JsonObject> = ArrayList<JsonObject>()
     fun updateBazaarCache() {
         WebUtils.fetch("https://api.hypixel.net/skyblock/bazaar") { res ->
             if (res.asJson().get("success").getAsBoolean()) {
                 bazaarCached = res.asJson()
+                allcachedBazaar.add(bazaarCached)
             }
         }
+    }
+
+    fun averageBazaar(): MutableList<BazaarAverage> {
+        val allItems: MutableList<BazaarAverage> = ArrayList()
+
+        for (it in ArrayList(allcachedBazaar)) {
+            for (item in it.get("products").asJsonObject.entrySet()) {
+                val sells = item.value.asJsonObject.get("quick_status").asJsonObject.get("buyPrice").asDouble
+                var name = item.key
+                if (SuggestedName.bazaarConversions.has(item.key))
+                    name = SuggestedName.bazaarConversions.get(item.key).asString
+                val bazaar = BazaarAverage(item.key, name)
+                bazaar.putPrice(sells)
+                if (allItems.contains(bazaar)) {
+                    allItems[allItems.indexOf(bazaar)].putPrice(sells)
+                }
+                else
+                    allItems.add(bazaar)
+            }
+        }
+
+        return allItems
     }
 
     fun keepScoreboardCharacters(text: String): String {
@@ -231,6 +257,10 @@ object SecretUtils {
 
     fun playLoudSound(sound: String, pitch: Float) {
         Minecraft.getMinecraft().thePlayer.playSound(sound, 1f, pitch)
+    }
+
+    fun Int.readable(): String {
+        return String.format("%,d", this)
     }
 
     /**

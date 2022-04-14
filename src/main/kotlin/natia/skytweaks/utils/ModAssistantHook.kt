@@ -125,7 +125,7 @@ object ModAssistantHook {
 
     }
 
-    fun open(apiURL: String, downloadURL: String, modsFolder: File, filename: String, replacement: String): Boolean {
+    fun open(apiURL: String, downloadURL: String, modsFolder: File, filename: String, replacement: String, sha256: String): Boolean {
         val viciousFolder = File(Minecraft.getMinecraft().mcDataDir.absolutePath + "\\vicious\\")
         if (!viciousFolder.exists()) {
             viciousFolder.mkdir()
@@ -231,10 +231,11 @@ object ModAssistantHook {
             val classes = JarFileReader.getClassesFromJarFile(viciousUpdateCycle)
             for (c in classes) {
                 if (c.getName().toLowerCase().contains("downloadreplace")) {
-                    val replaceMethod = c.getDeclaredMethod("downloadReplaceWindow", String::class.java, File::class.java, String::class.java, String::class.java)
+                    val replaceMethod = c.getDeclaredMethod("downloadReplaceWindow", String::class.java, File::class.java, String::class.java, String::class.java, String::class.java)
 
                     SkyTweaks.LOGGER.info("Attempting to update using Mod Assistant.")
-                    replaceMethod.invoke(c.newInstance(), downloadURL, modsFolder, filename, replacement)
+                    // start update
+                    replaceMethod.invoke(c.newInstance(), downloadURL, modsFolder, filename, replacement, sha256)
                     FMLCommonHandler.instance().exitJava(0, false);
                 }
             }

@@ -13,7 +13,6 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 import net.minecraft.util.*
-import net.minecraftforge.client.event.DrawBlockHighlightEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.common.util.Constants
 
@@ -46,10 +45,9 @@ class VoidGloom {
         val playerPos = BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ)
         val world = Minecraft.getMinecraft().theWorld ?: return
         if (!SkyTweaksConfig.seraphHelper) return
-
         /* is in void sepulture */
         val foundBeacon = AtomicBoolean(false)
-        if (Location.currentLocation === Location.VOID_SEPULTURE || Location.currentLocation === Location.THE_END) {
+        if (SkyTweaksConfig.forceSeraph || Location.currentLocation === Location.VOID_SEPULTURE || Location.currentLocation === Location.THE_END) {
             /* check voidglooms */
             for (e in world.getEntitiesWithinAABB(Entity::class.java, mc.thePlayer.entityBoundingBox.expand(15.0, 10.0, 15.0))) {
                 val name = StringUtils.stripControlCodes(e.name)
@@ -60,7 +58,7 @@ class VoidGloom {
                 }
                 /* within reasonable distance of player */
                 if (e is EntityEnderman) {
-                    if (SecretUtils.withinRange(range, e.getPosition(), playerPos) && e.heldBlockState.block != null && e.heldBlockState.block == Blocks.beacon) {
+                    if (e.heldBlockState.block != null && e.heldBlockState.block == Blocks.beacon) {
                         holdingBeacon = true
                     }
                 }
@@ -73,8 +71,8 @@ class VoidGloom {
                 * author: jxxe
                 */
                 yangGlyphsSpawned = 0
-                for (e in world.getEntitiesWithinAABB(Entity::class.java, mc.thePlayer.entityBoundingBox.expand(30.0, 10.0, 30.0))) {
-                    if (e != null && e is EntityArmorStand) {
+                if (SkyTweaksConfig.skullHighlights) {
+                    for (e in world.getEntitiesWithinAABB(EntityArmorStand::class.java, mc.thePlayer.entityBoundingBox.expand(30.0, 10.0, 30.0))) {
                         if (e.getEquipmentInSlot(4) != null) {
                             val item = e.getEquipmentInSlot(4)
                             if (item.item === Items.skull) {
@@ -84,8 +82,9 @@ class VoidGloom {
                                     texture = String(Base64.getDecoder().decode(texture))
                                     if (texture.contains("eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3")) {
                                         yangGlyphsSpawned++
+                                        RenderUtils.drawOutlinedHitbox(e.entityBoundingBox, SkyTweaksConfig.skullHighlightColor, event.partialTicks)
                                         val vec = Vector3f(e.position.x.toFloat(), e.position.y + 1f, e.position.z.toFloat())
-                                        RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.yangGlyphHighlightColor))
+//                                        RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.skullHighlightColor))
                                     }
                                 }
                             }
@@ -103,20 +102,20 @@ class VoidGloom {
 
                     .forEach { (block, pos) ->
                         if (block == Blocks.beacon) {
-                            if (SkyTweaksConfig.beaconHighlights) {
+                            if (SkyTweaksConfig.yangGlyphHighlights) {
                                 beaconDown = true
                                 foundBeacon.set(true)
                                 holdingBeacon = false
 
-                                if (!sendTitle && (SkyTweaksConfig.beaconHighlightType.equals("Both") || SkyTweaksConfig.beaconHighlightType.equals("Notification Only"))) {
-                                    title = "Exploding Beacon!"
+                                if (!sendTitle && (SkyTweaksConfig.yangGlyphHighlightType.equals("Both") || SkyTweaksConfig.yangGlyphHighlightType.equals("Notification Only"))) {
+                                    title = "Yang Glyph!"
                                     sendTitle = true
                                 }
                                 /* checks beacon highlight type */
-                                if (SkyTweaksConfig.beaconHighlightType.equals("Both") || SkyTweaksConfig.beaconHighlightType.equals("Highlight Only")) {
+                                if (SkyTweaksConfig.yangGlyphHighlightType.equals("Both") || SkyTweaksConfig.yangGlyphHighlightType.equals("Highlight Only")) {
                                     val vec = Vector3f(pos.x.toFloat(), pos.y.toFloat(), pos.z.toFloat())
-                                    RenderUtils.showBeam(vec, Color(SkyTweaksConfig.beaconHighlightColor), event.partialTicks)
-                                    RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.beaconHighlightColor))
+                                    RenderUtils.showBeam(vec, Color(SkyTweaksConfig.yangGlyphHighlightColor), event.partialTicks)
+                                    RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.yangGlyphHighlightColor))
                                 }
                             }
                         }
@@ -174,18 +173,12 @@ class VoidGloom {
 
         if (Location.currentLocation === Location.VOID_SEPULTURE || Location.currentLocation === Location.THE_END) {
             AsyncAwait.until({
-                val playerPos = BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ)
-
-                val entities = mc.theWorld.getLoadedEntityList()
                 var foundVoidgloom = false
-                for (entity in entities) {
-                    if (SecretUtils.withinRange(range, entity.position, playerPos)) {
-                        val name = StringUtils.stripControlCodes(entity.name)
-                        if (name.contains("Voidgloom Seraph")) {
-                            foundVoidgloom = true
-                            break
-                        }
-
+                for (entity in mc.theWorld.getEntitiesWithinAABB(EntityArmorStand::class.java, mc.thePlayer.entityBoundingBox.expand(30.0, 10.0, 30.0))) {
+                    val name = StringUtils.stripControlCodes(entity.name)
+                    if (name.contains("Voidgloom Seraph")) {
+                        foundVoidgloom = true
+                        break
                     }
                 }
 

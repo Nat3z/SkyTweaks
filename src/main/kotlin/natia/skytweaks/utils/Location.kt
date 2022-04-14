@@ -21,7 +21,7 @@ enum class Location private constructor(private val locationName: String) {
     companion object {
 
         fun getAsLocation(locationName: String): Location {
-            for (location in Location.values()) {
+            for (location in values()) {
                 if (location.asName().contains(locationName)) {
                     return location
                 }
@@ -38,7 +38,7 @@ enum class Location private constructor(private val locationName: String) {
 
                         for (s in scoreboard) {
                             val sCleaned = SecretUtils.cleanSB(s)
-                            for (location in Location.values()) {
+                            for (location in values()) {
                                 if (sCleaned.contains(location.toString()))
                                     return location
                             }

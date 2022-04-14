@@ -1,7 +1,6 @@
 package natia.skytweaks.features.bazaar
 
 import com.google.common.base.Stopwatch
-import com.google.gson.JsonObject
 import natia.skytweaks.SecretUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ChatComponentText
@@ -11,7 +10,6 @@ import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
 class Notifier {
-    private val alreadyNotified = ArrayList<BazaarOrder>()
     internal var mc = Minecraft.getMinecraft()
 
     internal var stopwatch = Stopwatch.createUnstarted()
@@ -32,10 +30,10 @@ class Notifier {
                 if (!SecretUtils.bazaarCached.get("success").asBoolean) return
 
                 val products = SecretUtils.bazaarCached.get("products").asJsonObject
-                for (order in orders) {
+                for (order in sellorders) {
                     if (alreadyNotified.contains(order)) continue
 
-                    val item = order.item.toUpperCase().replace(" ", "_")
+                    val item = order.item
                     if (products.has(item)) {
                         val sells = products.get(item).asJsonObject.get("quick_status").asJsonObject.get("buyPrice").asDouble
 
@@ -54,7 +52,8 @@ class Notifier {
 
     companion object {
 
-        var orders: MutableList<BazaarOrder> = ArrayList()
+        var sellorders: MutableList<BazaarOrder> = ArrayList()
+        val alreadyNotified: MutableList<BazaarOrder> = ArrayList<BazaarOrder>()
 
         val instance = Notifier()
     }

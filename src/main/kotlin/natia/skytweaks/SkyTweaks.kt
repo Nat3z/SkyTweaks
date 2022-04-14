@@ -71,14 +71,14 @@ class SkyTweaks {
 
         configHandler!!.saveConfig()
 
-        Thread(Runnable { SecretUtils.updateBazaarCache() }).start()
+        Thread { SecretUtils.updateBazaarCache() }.start()
 
     }
 
     companion object {
         const val MODID: String = "skytweaks-mod"
-        const val VERSION = "v1.0.5.1"
-        const val IS_UNSTABLE = false
+        const val VERSION = "v1.0.5.2"
+        const val IS_UNSTABLE = true
         @JvmField
         val LOGGER: Logger = LogManager.getLogger("SkyTweaks Logger")!!
 

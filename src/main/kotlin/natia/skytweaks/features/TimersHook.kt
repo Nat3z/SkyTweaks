@@ -21,16 +21,15 @@ class TimersHook {
         val timersToRemove = ArrayList<SkyblockTimer>()
 
         for (timer in TimersHook.timers) {
-            if (timer.timerStopwatch.isRunning() && !timer.hiddenTimer) {
+            if (timer.timerStopwatch.isRunning && !timer.hiddenTimer) {
                 y += 10
                 mc.fontRendererObj.drawString(timer.displayText + ": " +
-                        EnumChatFormatting.GRAY + (timer.secondsUntil * 1000 - timer.timerStopwatch.elapsed(TimeUnit.MILLISECONDS)) as Double / 1000 + "s", element.x.toFloat(), (element.y + y).toFloat(), Color.white.rgb, true)
-
-                if (timer.timerStopwatch.elapsed(TimeUnit.SECONDS) >= timer.secondsUntil) {
-                    timer.timerStopwatch.reset()
-                    timer.run()
-                    timersToRemove.add(timer)
-                }
+                        EnumChatFormatting.GRAY + (timer.secondsUntil * 1000 - timer.timerStopwatch.elapsed(TimeUnit.MILLISECONDS)).toDouble() / 1000 + "s", element.x.toFloat(), (element.y + y).toFloat(), Color.white.rgb, true)
+            }
+            if (timer.timerStopwatch.isRunning && timer.timerStopwatch.elapsed(TimeUnit.SECONDS) >= timer.secondsUntil) {
+                timer.timerStopwatch.reset()
+                timer.run()
+                timersToRemove.add(timer)
             }
         }
 

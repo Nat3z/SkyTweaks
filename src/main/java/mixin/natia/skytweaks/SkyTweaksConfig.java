@@ -296,6 +296,16 @@ public class SkyTweaksConfig implements BlendingConfig {
     public static boolean seraphHelper = false;
 
     @SerializeField(
+            name = "Force Voidgloom Seraph",
+            description = "Forces the Voidgloom Seraph module to be enabled.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean forceSeraph = false;
+
+    @SerializeField(
             name = "Color Voidgloom Seraph",
             description = "Assists you in the fight by coloring it when it is in a certain phase.",
             category = "Slayers",
@@ -306,8 +316,29 @@ public class SkyTweaksConfig implements BlendingConfig {
     public static boolean seraphColorize = false;
 
     @SerializeField(
-            name = "Yang Glyph Highlighter",
-            description = "Highlights the YANG GLYPH.",
+            name = "Skull Highlighter",
+            description = "Highlights the Nukekubi Fixations.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean skullHighlights = false;
+
+    @SerializeField(
+            name = "Skull Highlight Color",
+            description = "Highlight color of the Nukekubi Fixations.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = SerializeType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int skullHighlightColor = new Color(164, 2, 17).getRed();
+
+    /* beacons */
+    @SerializeField(
+            name = "Yang Glyph Notifier",
+            description = "Notifies and highlights the exploding beacon.",
             category = "Slayers",
             subCategory = "Voidgloom Seraph",
             type = SerializeType.TOGGLE,
@@ -323,39 +354,18 @@ public class SkyTweaksConfig implements BlendingConfig {
             type = SerializeType.COLOR_WHEEL,
             UAYOR = false
     )
-    public static int yangGlyphHighlightColor = new Color(164, 2, 17).getRed();
-
-    /* beacons */
-    @SerializeField(
-            name = "Exploding Beacon Notifier",
-            description = "Notifies and highlights the exploding beacon.",
-            category = "Slayers",
-            subCategory = "Voidgloom Seraph",
-            type = SerializeType.TOGGLE,
-            UAYOR = false
-    )
-    public static boolean beaconHighlights = false;
+    public static int yangGlyphHighlightColor = new Color(0, 101, 164).getRed();
 
     @SerializeField(
-            name = "Exploding Beacon Highlight Color",
-            description = "Highlight color of the EXPLODING BEACON.",
-            category = "Slayers",
-            subCategory = "Voidgloom Seraph",
-            type = SerializeType.COLOR_WHEEL,
-            UAYOR = false
-    )
-    public static int beaconHighlightColor = new Color(0, 101, 164).getRed();
-
-    @SerializeField(
-            name = "Exploding Beacon Notify Type",
-            description = "Type of notification for exploding beacon.",
+            name = "Yang Glyph Notify Type",
+            description = "Type of notification for yang glyph.",
             category = "Slayers",
             subCategory = "Voidgloom Seraph",
             type = SerializeType.SLIDER_TEXT,
             sliderChoices = {"Both", "Highlight Only", "Notification Only"},
             UAYOR = false
     )
-    public static String beaconHighlightType = "Both";
+    public static String yangGlyphHighlightType = "Both";
 
 
     /* Special */
@@ -381,7 +391,15 @@ public class SkyTweaksConfig implements BlendingConfig {
     )
     public static boolean mythosWaypointOptimize = false;
 
-
+    @SerializeField(
+            name = "Bazaar Overlay",
+            description = "An overlay for the Bazaar menu that shows undercut sell orders and other valuable info.",
+            category = "Special",
+            subCategory = "Bazaar",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean bazaarOverlay = false;
 
 
 
@@ -419,6 +437,28 @@ public class SkyTweaksConfig implements BlendingConfig {
     )
     public static int wormsCollected = 0;
 
+    /* Bazaar Overlay */
+    @SerializeField(
+            name = "Bazaar Overlay HUD",
+            description = "Bazaar Overlay",
+            category = "Overlay",
+            subCategory = "General",
+            type = SerializeType.HUD,
+            UAYOR = false,
+            hidden = true
+    )
+    public static HudElement bazaarOverlayHUD = new HudElement(190, 100, 190, 100, null);
+
+    @SerializeField(
+            name = "Bazaar Leaderboard HUD",
+            description = "Bazaar Overlay",
+            category = "Overlay",
+            subCategory = "General",
+            type = SerializeType.HUD,
+            UAYOR = false,
+            hidden = true
+    )
+        public static HudElement bazaarLeaderboardHUD = new HudElement(20, 20, 190, 100, null);
 
     /* HUD stuff at end */
 
