@@ -23,21 +23,23 @@ class BazaarLeaderboard : HudElementModule(SkyTweaksConfig.bazaarLeaderboardHUD)
     var pastMostProfit: MutableList<BazaarAverage> = ArrayList()
     var mostProfitable: MutableList<BazaarAverage> = ArrayList()
     var watch = Stopwatch.createUnstarted()
-    var timer = SkyblockTimer(watch, "Bazaar Refresh", 10, true) {
-        mostProfitable.clear()
-        SecretUtils.averageBazaar().forEach {
-            val sellprice =
-                SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get(
-                    "buyPrice"
-                ).asDouble
-            val buyPrice =
-                SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get(
-                    "sellPrice"
-                ).asDouble
-            if (it.calcAverage() - buyPrice >= 15000 && SecretUtils.coins > buyPrice + (it.calcAverage() - buyPrice))
-                mostProfitable.add(it)
-        }
-        pastMostProfit = ArrayList(mostProfitable)
+    var timer = SkyblockTimer(watch, "Bazaar Refresh", 90, true) {
+        Thread {
+            mostProfitable.clear()
+            SecretUtils.averageBazaar().forEach {
+                val sellprice =
+                    SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get(
+                        "buyPrice"
+                    ).asDouble
+                val buyPrice =
+                    SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get(
+                        "sellPrice"
+                    ).asDouble
+                if (it.calcAverage() - buyPrice >= 15000 && SecretUtils.coins > buyPrice + (it.calcAverage() - buyPrice))
+                    mostProfitable.add(it)
+            }
+            pastMostProfit = ArrayList(mostProfitable)
+        }.start()
     }
 
     override fun renderButton(mouseX: Int, mouseY: Int) {
@@ -59,7 +61,7 @@ class BazaarLeaderboard : HudElementModule(SkyTweaksConfig.bazaarLeaderboardHUD)
             amountOfAdds++
             val buyprice = SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get("buyPrice").asDouble
             val currprice = SecretUtils.bazaarCached.get("products").asJsonObject.get(it.id).asJsonObject.get("quick_status").asJsonObject.get("sellPrice").asDouble
-            mc.fontRendererObj.drawString("${it.displayName} ${EnumChatFormatting.DARK_GRAY} - ${EnumChatFormatting.GREEN}+${floor(it.calcAverage() - buyprice).toInt().readable()}", SkyTweaksConfig.bazaarLeaderboardHUD.x.toFloat() + 5,
+            mc.fontRendererObj.drawString("${it.displayName} ${EnumChatFormatting.DARK_GRAY} - ${EnumChatFormatting.GREEN}+${floor(it.calcAverage() - currprice).toInt().readable()}", SkyTweaksConfig.bazaarLeaderboardHUD.x.toFloat() + 5,
                 SkyTweaksConfig.bazaarLeaderboardHUD.y.toFloat() + y, Color.WHITE.rgb, true)
         }
 

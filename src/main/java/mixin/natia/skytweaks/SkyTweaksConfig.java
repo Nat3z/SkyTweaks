@@ -64,6 +64,16 @@ public class SkyTweaksConfig implements BlendingConfig {
     public static boolean alertRareDrops = true;
 
     @SerializeField(
+            name = "Lobby Day Notifier",
+            description = "Alerts the current day of the lobby you are in everytime you swap.",
+            category = "General",
+            subCategory = "Quality of Life",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean serverDayNotifier = true;
+
+    @SerializeField(
             name = "Skyblock Timers",
             description = "Shows Timers for Skyblock events. Required for some modules to work.",
             category = "General",
@@ -72,6 +82,16 @@ public class SkyTweaksConfig implements BlendingConfig {
             UAYOR = false
     )
     public static boolean allowTimers = false;
+
+    @SerializeField(
+            name = "Trade GUI Helper",
+            description = "A helper that shows bad trades and also possible scams.",
+            category = "General",
+            subCategory = "Quality of Life",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean tradeGui = false;
 
     @SerializeField(
             name = "Don't Render Players in Hub",
@@ -208,6 +228,26 @@ public class SkyTweaksConfig implements BlendingConfig {
     )
     public static boolean copyFails = true;
 
+    @SerializeField(
+            name = "Point Bats",
+            description = "Adds a compass that points to bats.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean pointBats = false;
+
+    @SerializeField(
+            name = "Point Bats Color",
+            description = "Color of the compass that points to bats.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = SerializeType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int pointBatsColor = new Color(50, 50, 50).getRGB();
+
     /*@SerializeField(
             name = "Highlight Inactive Terminals",
             description = "Highlights all skipped/uncompleted terminals in F7. UAYOR because you can see blocks through walls. (NOT TESTED)",
@@ -273,6 +313,16 @@ public class SkyTweaksConfig implements BlendingConfig {
             UAYOR = false
     )
     public static boolean rngMeter = false;
+
+    @SerializeField(
+            name = "Slayer Time Notification",
+            description = "Shows the slayer time after the completion of a quest.",
+            category = "Slayers",
+            subCategory = "General",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean slayerTimeNotify = false;
 
     @SerializeField(
             name = "Copy RNGesus",
@@ -354,7 +404,17 @@ public class SkyTweaksConfig implements BlendingConfig {
             type = SerializeType.COLOR_WHEEL,
             UAYOR = false
     )
-    public static int yangGlyphHighlightColor = new Color(0, 101, 164).getRed();
+    public static int yangGlyphHighlightColor = new Color(0, 101, 164).getRGB();
+
+    @SerializeField(
+            name = "Yang Glyph Compass Color",
+            description = "Highlight color of the YANG GLYPH compass.",
+            category = "Slayers",
+            subCategory = "Voidgloom Seraph",
+            type = SerializeType.COLOR_WHEEL,
+            UAYOR = false
+    )
+    public static int yangGlyphCompassColor = new Color(6, 222, 68).getRGB();
 
     @SerializeField(
             name = "Yang Glyph Notify Type",
@@ -458,7 +518,18 @@ public class SkyTweaksConfig implements BlendingConfig {
             UAYOR = false,
             hidden = true
     )
-        public static HudElement bazaarLeaderboardHUD = new HudElement(20, 20, 190, 100, null);
+    public static HudElement bazaarLeaderboardHUD = new HudElement(20, 20, 190, 100, null);
+
+    @SerializeField(
+            name = "Trade Log HUD",
+            description = "Trade HUD",
+            category = "HUD",
+            type = SerializeType.HUD,
+            subCategory = "",
+            UAYOR = false,
+            hidden = true
+    )
+    public static HudElement tradeLogHUD = new HudElement(0, 0, 190, 100, new HudPreviews.VoidgloomAssist());
 
     /* HUD stuff at end */
 

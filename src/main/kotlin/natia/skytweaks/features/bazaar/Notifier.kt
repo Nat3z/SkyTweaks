@@ -24,7 +24,7 @@ class Notifier {
             if (!stopwatch.isRunning) stopwatch.start()
 
             /* 10 Seconds have elapsed. Start checks. */
-            if (stopwatch.elapsed(TimeUnit.SECONDS) >= 10) {
+            if (stopwatch.elapsed(TimeUnit.SECONDS) >= 20) {
                 /* resets Stopwatch. */
                 stopwatch.reset()
                 if (!SecretUtils.bazaarCached.get("success").asBoolean) return
@@ -40,7 +40,7 @@ class Notifier {
                         if (order.coins > sells) {
                             alreadyNotified.add(order)
                             mc.thePlayer.addChatComponentMessage(ChatComponentText(
-                                    EnumChatFormatting.AQUA.toString() + "Your Bazaar Sell Offer for " + EnumChatFormatting.DARK_AQUA + order.item + EnumChatFormatting.AQUA + " was undercut!"
+                                    EnumChatFormatting.AQUA.toString() + "Your Bazaar Sell Offer for " + EnumChatFormatting.DARK_AQUA + order.displayName + EnumChatFormatting.AQUA + " was undercut!"
                             ))
                         }
                     }

@@ -10,6 +10,7 @@
     "MixinGuiEditSign",
     "MixinMinecraft",
     "MixinRenderManager",
-    "MixinNewChat"
+    "MixinNewChat",
+    "MixinGuiContainer"
   ]
 }

@@ -1,6 +1,8 @@
 package natia.skytweaks.hooks
 
 import natia.skytweaks.features.RepartyHook
+import natia.skytweaks.features.SlayerContracts
+import natia.skytweaks.features.SummonsAlert
 import natia.skytweaks.features.bazaar.BazaarHook
 import natia.skytweaks.features.dungeons.BonzoSpiritHook
 import natia.skytweaks.features.dungeons.CopyFails
@@ -9,6 +11,7 @@ import natia.skytweaks.features.fishing.WormTimer
 import natia.skytweaks.features.griffin.GriffinBurrowWaypoints
 import natia.skytweaks.features.slayers.CopyRNG
 import natia.skytweaks.features.slayers.RNGesusBar
+import natia.skytweaks.features.waypoints.GlobalWaypoints
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -28,5 +31,8 @@ class MessageHook {
         CopyRNG.instance.chat(event)
         //TerminalHighlight.getInstance().chat(event);
         BazaarHook.instance.chat(event);
+        SlayerContracts.instance.chat(event)
+        GlobalWaypoints.instance.chat(event)
+//        SummonsAlert.instance.chat(event)
     }
 }

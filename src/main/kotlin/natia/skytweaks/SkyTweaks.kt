@@ -4,6 +4,7 @@ import gg.blendingMC.BlendingMC
 import gg.blendingMC.settings.BlendingMCSettings
 import natia.skytweaks.commands.RepartyCommand
 import natia.skytweaks.commands.SavePickupLog
+import natia.skytweaks.commands.waypoints.WaypointsCommand
 import natia.skytweaks.config.SkyTweaksBlend
 import natia.skytweaks.config.SkyTweaksCommand
 import natia.skytweaks.config.SkyTweaksHUDCommand
@@ -14,6 +15,7 @@ import natia.skytweaks.features.altC.QuickTab
 import natia.skytweaks.hooks.*
 import natia.skytweaks.features.griffin.GriffinBurrowWaypoints
 import natia.skytweaks.gui.GuiHook
+import natia.skytweaks.gui.trade.ItemLoreHook
 import natia.skytweaks.networking.ColorText
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.ClientCommandHandler
@@ -56,6 +58,7 @@ class SkyTweaks {
         MinecraftForge.EVENT_BUS.register(QuickTab())
         MinecraftForge.EVENT_BUS.register(GriffinBurrowWaypoints.instance)
         MinecraftForge.EVENT_BUS.register(BatDied.instance)
+//        MinecraftForge.EVENT_BUS.register(ItemLoreHook())
 
         /* Cosmetics */
         MinecraftForge.EVENT_BUS.register(ColorText())
@@ -68,6 +71,7 @@ class SkyTweaks {
         ClientCommandHandler.instance.registerCommand(SkyTweaksHUDCommand())
         ClientCommandHandler.instance.registerCommand(SkyTweaksCommand())
         ClientCommandHandler.instance.registerCommand(RepartyCommand())
+        ClientCommandHandler.instance.registerCommand(WaypointsCommand())
 
         configHandler!!.saveConfig()
 
@@ -77,8 +81,8 @@ class SkyTweaks {
 
     companion object {
         const val MODID: String = "skytweaks-mod"
-        const val VERSION = "v1.0.5.2.1"
-        const val IS_UNSTABLE = true
+        const val VERSION = "v1.0.6.1"
+        const val IS_UNSTABLE = false
         @JvmField
         val LOGGER: Logger = LogManager.getLogger("SkyTweaks Logger")!!
 

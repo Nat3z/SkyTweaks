@@ -3,7 +3,10 @@ package natia.skytweaks.hooks
 import com.google.common.base.Stopwatch
 import natia.skytweaks.SecretUtils
 import mixin.natia.skytweaks.SkyTweaksConfig
+import natia.skytweaks.features.SlayerContracts
+import natia.skytweaks.features.SummonsAlert
 import natia.skytweaks.features.bazaar.Notifier
+import natia.skytweaks.features.dungeons.BatPointer
 import natia.skytweaks.features.griffin.GriffinBurrowWaypoints
 import natia.skytweaks.features.slayers.VoidGloom
 import natia.skytweaks.utils.AsyncAwait
@@ -30,8 +33,10 @@ class TickHook {
         /* Tick Hook */
         VoidGloom.instance.tick()
         GriffinBurrowWaypoints.instance.tick()
-
-        Notifier.instance.tick();
+        SlayerContracts.instance.tick()
+        Notifier.instance.tick()
+        BatPointer.instance.tick()
+//        SummonsAlert.instance.tick()
 
         if (mc.theWorld == null) return
 
@@ -47,13 +52,11 @@ class TickHook {
             SecretUtils.getInventoryDiff(p.inventory.mainInventory)
             lastInventory = p.inventory.mainInventory.toMutableList()
 
-            if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 10 && SkyTweaksConfig.bazaarCaching) {
+            if (tickEventWatch.elapsed(TimeUnit.SECONDS) >= 25 && SkyTweaksConfig.bazaarCaching) {
                 tickEventWatch.reset()
                 if (!tickEventWatch.isRunning) tickEventWatch.start()
 
-                Thread {
-                    SecretUtils.updateBazaarCache()
-                }.start()
+                SecretUtils.updateBazaarCache()
             }
         }
     }

@@ -41,6 +41,8 @@ class VoidGloom {
 
     private val checkIfVoidgloomNearby = Stopwatch.createUnstarted()
 
+    var beaconPos: Vec3? = null
+
     fun blockRender(event: RenderWorldLastEvent) {
         val playerPos = BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ)
         val world = Minecraft.getMinecraft().theWorld ?: return
@@ -114,6 +116,8 @@ class VoidGloom {
                                 /* checks beacon highlight type */
                                 if (SkyTweaksConfig.yangGlyphHighlightType.equals("Both") || SkyTweaksConfig.yangGlyphHighlightType.equals("Highlight Only")) {
                                     val vec = Vector3f(pos.x.toFloat(), pos.y.toFloat(), pos.z.toFloat())
+                                    beaconPos = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+
                                     RenderUtils.showBeam(vec, Color(SkyTweaksConfig.yangGlyphHighlightColor), event.partialTicks)
                                     RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.yangGlyphHighlightColor))
                                 }
@@ -151,6 +155,10 @@ class VoidGloom {
             val unformattedSlayer = StringUtils.stripControlCodes(slayerHealth)
             mc.fontRendererObj.drawString(EnumChatFormatting.RED.toString() + "" + EnumChatFormatting.BOLD + "HIT PHASE: ", hudElement.x.toFloat(), (hudElement.y + 40).toFloat(), Color.white.rgb, true)
             mc.fontRendererObj.drawString(if (unformattedSlayer.contains("Hits")) EnumChatFormatting.GREEN.toString() + "YES" else EnumChatFormatting.RED.toString() + "NO", (hudElement.x + 110).toFloat(), (hudElement.y + 40).toFloat(), Color.white.rgb, true)
+        }
+
+        if (beaconDown && beaconPos != null) {
+            RenderUtils.drawPointers(beaconPos!!, Color(SkyTweaksConfig.yangGlyphCompassColor))
         }
 
         if (sendTitle && !titleWatch.isRunning) {

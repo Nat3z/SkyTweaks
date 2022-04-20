@@ -1,17 +1,19 @@
 package natia.skytweaks.utils
 
+import mixin.natia.skytweaks.SkyTweaksConfig
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
+import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.*
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.*
 import org.lwjgl.opengl.GL11
-
-import javax.vecmath.Vector3f
 import java.awt.*
-import java.util.ArrayList
+import javax.vecmath.Vector3f
+
 
 object RenderUtils {
     private val beaconBeam = ResourceLocation("textures/entity/beacon_beam.png")
@@ -132,6 +134,101 @@ object RenderUtils {
         GlStateManager.enableTexture2D()
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
         GlStateManager.popMatrix()
+    }
+
+    /**
+     * @author Mojang
+     */
+    fun drawLabel(pos: Vec3, text: String, color: Color, partialTicks: Float, shadow: Boolean = false, scale: Float = 1f) {
+        GlStateManager.disableCull()
+        GlStateManager.disableDepth()
+
+        val mc = Minecraft.getMinecraft()
+        val player = mc.thePlayer
+        val x =
+            pos.xCoord - player.lastTickPosX + (pos.xCoord - player.posX - (pos.xCoord - player.lastTickPosX)) * partialTicks
+        val y =
+            pos.yCoord - player.lastTickPosY + (pos.yCoord - player.posY - (pos.yCoord - player.lastTickPosY)) * partialTicks
+        val z =
+            pos.zCoord - player.lastTickPosZ + (pos.zCoord - player.posZ - (pos.zCoord - player.lastTickPosZ)) * partialTicks
+        val renderManager = mc.renderManager
+        val f1 = 0.0266666688
+        val width = mc.fontRendererObj.getStringWidth(text) / 2
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(x, y, z)
+        GL11.glNormal3f(0f, 1f, 0f)
+        GlStateManager.rotate(-renderManager.playerViewY, 0f, 1f, 0f)
+        GlStateManager.rotate(renderManager.playerViewX, 1f, 0f, 0f)
+        GlStateManager.scale(-f1, -f1, -f1)
+        GlStateManager.scale(scale, scale, scale)
+        GlStateManager.enableBlend()
+        GlStateManager.disableLighting()
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+        GlStateManager.enableTexture2D()
+        mc.fontRendererObj.drawString(text, (-width).toFloat(), 0f, color.rgb, shadow)
+        GlStateManager.disableBlend()
+        GlStateManager.popMatrix()
+
+        GlStateManager.enableDepth()
+        GlStateManager.enableCull()
+    }
+
+
+    fun drawPointers(vector: Vec3, color: Color) {
+        val mc = Minecraft.getMinecraft()
+        val pos = vector
+        val sr = ScaledResolution(mc)
+
+        val guiLeft = (sr.scaledWidth - 176) / 2.0
+        val guiTop = (sr.scaledHeight - 222) / 2.0
+
+        val x = guiLeft + 88.5
+        val y = guiTop + 110
+        val angle: Double = -(MathHelper.atan2(
+            pos.xCoord - mc.thePlayer.posX,
+            pos.zCoord - mc.thePlayer.posZ
+        ) * 57.29577951308232) - mc.thePlayer.rotationYaw
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(x, y, 0.0)
+        GlStateManager.rotate(angle.toFloat(), 0f, 0f, 1f)
+        GlStateManager.translate(-x, -y, 0.0)
+        GlStateManager.enableBlend()
+        GlStateManager.disableTexture2D()
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+        val tes = Tessellator.getInstance()
+        val wr = tes.worldRenderer
+        GlStateManager.color(color.red.toFloat() / 255f, color.green.toFloat() / 255f, color.blue.toFloat() / 255f)
+        GL11.glLineWidth(5f)
+        wr.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
+        wr.pos(x + 10, y + 45, 0.0).endVertex()
+        wr.pos(x, y, 0.0).endVertex()
+        wr.pos(x - 10, y + 45, 0.0).endVertex()
+        tes.draw()
+
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
+        GlStateManager.popMatrix()
+    }
+
+    fun renderTexturedRect(size: Int, xPos: Int, yPos: Int, resource: ResourceLocation) {
+        var x: Int = xPos
+        var y: Int = yPos
+        GlStateManager.disableLighting()
+        GlStateManager.disableDepth()
+        GlStateManager.enableBlend()
+        GlStateManager.enableAlpha()
+        GlStateManager.color(1f, 1f, 1f, 1f)
+        Minecraft.getMinecraft().textureManager.bindTexture(resource)
+        GlStateManager.blendFunc(770, 771)
+        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND)
+        GL11.glTranslated(0.0, 0.0, 1.0)
+        Gui.drawModalRectWithCustomSizedTexture(x, y, 0f, 0f, 16, 16, 16f, 16f)
+        GlStateManager.color(1f, 1f, 1f, 1f)
+        GL11.glTranslated(0.0, 0.0, -1.0)
+        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE)
+        GlStateManager.enableLighting()
+        GlStateManager.enableDepth()
+        GlStateManager.disableAlpha()
     }
 
     /**

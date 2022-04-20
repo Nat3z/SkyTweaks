@@ -13,16 +13,16 @@ class BatDied {
 
     private var mc: Minecraft = Minecraft.getMinecraft()
 
-    @SubscribeEvent
-    fun onEntityDeath(event: LivingDeathEvent) {
-        if (mc.theWorld == null) return
-        if (!SkyTweaksConfig.batdead) return
-        if (!SecretUtils.isValid) return
-        if (SecretUtils.isInDungeons != Location.THE_CATACOMBS) return
-        if (event.entity !is EntityBat) return
-
-        SecretUtils.sendWarning("A bat was killed in your dungeon!")
-    }
+//    @SubscribeEvent
+//    fun onEntityDeath(event: LivingDeathEvent) {
+//        if (mc.theWorld == null) return
+//        if (!SkyTweaksConfig.batdead) return
+//        if (!SecretUtils.isValid) return
+//        if (SecretUtils.isInDungeons != Location.THE_CATACOMBS) return
+//        if (event.entity !is EntityBat) return
+//
+//        SecretUtils.sendWarning("A bat was killed in your dungeon!")
+//    }
 
     companion object {
         val instance: BatDied = BatDied()

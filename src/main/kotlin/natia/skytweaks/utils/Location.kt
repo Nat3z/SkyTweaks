@@ -46,7 +46,7 @@ enum class Location private constructor(private val locationName: String) {
                     }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
+
                 }
 
                 return Location.NONE

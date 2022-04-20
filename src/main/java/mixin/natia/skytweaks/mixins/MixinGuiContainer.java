@@ -1,5 +1,6 @@
 package mixin.natia.skytweaks.mixins;
 
+import natia.skytweaks.gui.GuiHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -45,5 +46,10 @@ public abstract class MixinGuiContainer {
             }
         }*/
     }
-
+    @Inject(method = "drawSlot", at = @At("RETURN"))
+    public void drawSlot_RETURN(Slot slotIn, CallbackInfo ci) {
+        if (inventorySlots instanceof ContainerChest) {
+            GuiHook.Companion.getTradeGui().drawSlots((ContainerChest) inventorySlots);
+        }
+    }
 }

@@ -194,12 +194,14 @@ object SecretUtils {
 
     public val allcachedBazaar: MutableList<JsonObject> = ArrayList<JsonObject>()
     fun updateBazaarCache() {
-        WebUtils.fetch("https://api.hypixel.net/skyblock/bazaar") { res ->
-            if (res.asJson().get("success").getAsBoolean()) {
-                bazaarCached = res.asJson()
-                allcachedBazaar.add(bazaarCached)
+        Thread {
+            WebUtils.fetch("https://api.hypixel.net/skyblock/bazaar") { res ->
+                if (res.asJson().get("success").getAsBoolean()) {
+                    bazaarCached = res.asJson()
+                    allcachedBazaar.add(bazaarCached)
+                }
             }
-        }
+        }.start()
     }
 
     fun averageBazaar(): MutableList<BazaarAverage> {
@@ -545,4 +547,17 @@ object SecretUtils {
 
     }
 
+    val String.parsable: Boolean
+    get() {
+        try {
+            Integer.parseInt(this)
+            return true
+        } catch (ex: Exception) {
+            return false
+        }
+    }
+
+    fun BlockPos.toVec3(): Vec3 {
+        return Vec3(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
+    }
 }
