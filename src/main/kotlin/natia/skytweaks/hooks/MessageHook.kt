@@ -6,6 +6,7 @@ import natia.skytweaks.features.SummonsAlert
 import natia.skytweaks.features.bazaar.BazaarHook
 import natia.skytweaks.features.dungeons.BonzoSpiritHook
 import natia.skytweaks.features.dungeons.CopyFails
+import natia.skytweaks.features.dungeons.NotifyCrush
 import natia.skytweaks.features.fishing.WormCounter
 import natia.skytweaks.features.fishing.WormTimer
 import natia.skytweaks.features.griffin.GriffinBurrowWaypoints
@@ -34,5 +35,6 @@ class MessageHook {
         SlayerContracts.instance.chat(event)
         GlobalWaypoints.instance.chat(event)
 //        SummonsAlert.instance.chat(event)
+        NotifyCrush.instance.chat(event)
     }
 }

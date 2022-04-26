@@ -4,7 +4,10 @@ import cc.blendingMC.vicious.BlendingConfig;
 import cc.blendingMC.vicious.HudElement;
 import cc.blendingMC.vicious.SerializeField;
 import cc.blendingMC.vicious.SerializeType;
+import natia.skytweaks.commands.waypoints.WaypointsGui;
 import natia.skytweaks.config.HudPreviews;
+import natia.skytweaks.hooks.TickHook;
+import net.minecraft.client.Minecraft;
 
 import java.awt.*;
 
@@ -51,6 +54,20 @@ public class SkyTweaksConfig implements BlendingConfig {
     )
     public static boolean bazaarCaching = true;
 
+    @SerializeField(
+            name = "Waypoints",
+            description = "Opens waypoint management gui",
+            category = "General",
+            subCategory = "---",
+            type = SerializeType.FUNCTION,
+            UAYOR = false,
+            funcName = "Open"
+    )
+    public static Runnable openWaypoints = () -> {
+        Minecraft.getMinecraft().thePlayer.closeScreen();
+        TickHook.scheduleGui(new WaypointsGui());
+    };
+
     /* General - Quality of Life */
 
     @SerializeField(
@@ -62,6 +79,16 @@ public class SkyTweaksConfig implements BlendingConfig {
             UAYOR = false
     )
     public static boolean alertRareDrops = true;
+
+    @SerializeField(
+            name = "Share Waypoint in Party Chat",
+            description = "Change share method to message it in party chat.",
+            category = "General",
+            subCategory = "Quality of Life",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean sharePartyChat = false;
 
     @SerializeField(
             name = "Lobby Day Notifier",
@@ -123,15 +150,15 @@ public class SkyTweaksConfig implements BlendingConfig {
     )
     public static boolean damageMeter = false;
 
-    @SerializeField(
-            name = "Assume First Strike ALWAYS",
-            description = "Always assumes that every time you hit that it's the first.",
-            category = "General",
-            subCategory = "Quality of Life",
-            type = SerializeType.TOGGLE,
-            UAYOR = false
-    )
-    public static boolean assumeFirstStrike = true;
+//    @SerializeField(
+//            name = "Assume First Strike ALWAYS",
+//            description = "Always assumes that every time you hit that it's the first.",
+//            category = "General",
+//            subCategory = "Quality of Life",
+//            type = SerializeType.TOGGLE,
+//            UAYOR = false
+//    )
+//    public static boolean assumeFirstStrike = true;
 
     @SerializeField(
             name = "ALT+C Executor",
@@ -227,6 +254,16 @@ public class SkyTweaksConfig implements BlendingConfig {
             UAYOR = false
     )
     public static boolean copyFails = true;
+
+    @SerializeField(
+            name = "Notify to Crush Storm",
+            description = "Enables the ability to get a notification whenever you should crush Storm.",
+            category = "Dungeons",
+            subCategory = "Dungeons",
+            type = SerializeType.TOGGLE,
+            UAYOR = false
+    )
+    public static boolean crushStorm = false;
 
     @SerializeField(
             name = "Point Bats",
@@ -457,7 +494,8 @@ public class SkyTweaksConfig implements BlendingConfig {
             category = "Special",
             subCategory = "Bazaar",
             type = SerializeType.TOGGLE,
-            UAYOR = false
+            UAYOR = false,
+            hidden = true
     )
     public static boolean bazaarOverlay = false;
 

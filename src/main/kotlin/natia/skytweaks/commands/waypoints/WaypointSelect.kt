@@ -1,7 +1,9 @@
 package natia.skytweaks.commands.waypoints
 
+import mixin.natia.skytweaks.SkyTweaksConfig
 import natia.skytweaks.features.waypoints.GlobalWaypoints
 import natia.skytweaks.features.waypoints.Waypoint
+import natia.skytweaks.hooks.TickHook
 import net.minecraft.client.Minecraft
 import net.minecraft.client.audio.SoundHandler
 import net.minecraft.client.gui.Gui
@@ -48,7 +50,7 @@ class WaypointSelect(val buttonID: Int, val x: Int, val y: Int, val waypoint: Wa
         /* Click Event */
         if (!Mouse.getEventButtonState() || !isShareHovered) return
         mc.thePlayer.closeScreen()
-        mc.thePlayer.sendChatMessage(waypoint.toShareable())
+        mc.thePlayer.sendChatMessage((if (SkyTweaksConfig.sharePartyChat) "/pc" else "/ac") + waypoint.toShareable())
     }
 
     override fun playPressSound(soundHandlerIn: SoundHandler?) {
@@ -74,5 +76,6 @@ class WaypointSelect(val buttonID: Int, val x: Int, val y: Int, val waypoint: Wa
         if (!Mouse.getEventButtonState() || !isShareHovered) return
         mc.thePlayer.closeScreen()
         GlobalWaypoints.instance.waypoints.remove(waypoint)
+        TickHook.scheduleGui(WaypointsGui())
     }
 }

@@ -14,14 +14,14 @@ class CopyFails {
 
     fun chat(event: ClientChatReceivedEvent) {
         if (!SkyTweaksConfig.copyFails) return
-        if (SecretUtils.isInDungeons !== Location.THE_CATACOMBS) return
+        if (Location.currentLocation != Location.THE_CATACOMBS) return
 
         val message = event.message.unformattedText
         if (message.contains(": "))
             return
 
-        if (SecretUtils.isValid && SecretUtils.isInDungeons === Location.THE_CATACOMBS) {
-            if (message.contains("You were killed by") || message.contains(" was killed by") || message.contains("died to a")) {
+        if (SecretUtils.isValid) {
+            if (message.contains("You were killed by") || message.contains("was killed by") || message.contains("died to a")) {
                 val stringSelection = StringSelection(message)
                 val clipboard = Toolkit.getDefaultToolkit().systemClipboard
                 clipboard.setContents(stringSelection, null)

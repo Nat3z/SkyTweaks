@@ -1,5 +1,6 @@
 package natia.skytweaks.hooks
 
+import natia.skytweaks.features.dungeons.NotifyCrush
 import natia.skytweaks.features.waypoints.GlobalWaypoints
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -11,5 +12,6 @@ class KeyboardInputHook {
     fun onKey(event: InputEvent.KeyInputEvent) {
         if (!Keyboard.getEventKeyState()) return
         GlobalWaypoints.instance.key()
+        NotifyCrush.instance.key()
     }
 }

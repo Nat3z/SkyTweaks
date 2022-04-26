@@ -4,6 +4,7 @@ import natia.skytweaks.features.DamagePerSecond
 import natia.skytweaks.features.SummonsAlert
 import natia.skytweaks.features.TimersHook
 import natia.skytweaks.features.dungeons.BatPointer
+import natia.skytweaks.features.dungeons.NotifyCrush
 import natia.skytweaks.features.fishing.WormCounter
 import natia.skytweaks.features.fishing.WormTimer
 import natia.skytweaks.features.slayers.RNGesusBar
@@ -27,6 +28,7 @@ class RenderHook {
                 RNGesusBar.instance.render()
                 DamagePerSecond.instance.render()
                 BatPointer.instance.render()
+                NotifyCrush.instance.render()
 //                SummonsAlert.instance.render()
             }
         }

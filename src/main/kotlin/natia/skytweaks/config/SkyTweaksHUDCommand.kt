@@ -1,5 +1,8 @@
 package natia.skytweaks.config
 
+import cc.blendingMC.commands.BlendingCommand
+import cc.blendingMC.commands.Command
+import cc.blendingMC.commands.Runner
 import cc.blendingMC.vicious.BlendingHUDEditor
 import gg.blendingMC.hook.MinecraftHook
 import natia.skytweaks.SkyTweaks
@@ -8,35 +11,11 @@ import net.minecraft.command.CommandBase
 import net.minecraft.command.CommandException
 import net.minecraft.command.ICommandSender
 
-class SkyTweaksHUDCommand : CommandBase() {
-    /**
-     * Gets the name of the command
-     */
-    override fun getCommandName(): String {
-        return "smhud"
-    }
+@Command(name = "skhud")
+class SkyTweaksHUDCommand : BlendingCommand {
 
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender
-     */
-    override fun getCommandUsage(sender: ICommandSender): String {
-        return "/smhud"
-    }
-
-    /**
-     * Callback when the command is invoked
-     *
-     * @param sender
-     * @param args
-     */
-    @Throws(CommandException::class)
-    override fun processCommand(sender: ICommandSender, args: Array<String>) {
+    @Runner
+    fun hudCommand() {
         TickHook.scheduleGui(BlendingHUDEditor(SkyTweaks.configHandler))
-    }
-
-    override fun canCommandSenderUseCommand(sender: ICommandSender): Boolean {
-        return true
     }
 }

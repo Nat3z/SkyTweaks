@@ -527,7 +527,7 @@ object SecretUtils {
 
 
                     enchantAdditives.forEach { (theEnchant, additive) ->
-                        if (theEnchant.contains("First Strike") && SkyTweaksConfig.assumeFirstStrike) {
+                        if (theEnchant.contains("First Strike")) {
                             if (enchantFinal.startsWith(theEnchant)) {
                                 itemAdditive[0] += additive
                             }
@@ -555,6 +555,10 @@ object SecretUtils {
         } catch (ex: Exception) {
             return false
         }
+    }
+
+    fun String.toChat(): ChatComponentText {
+        return ChatComponentText(this)
     }
 
     fun BlockPos.toVec3(): Vec3 {

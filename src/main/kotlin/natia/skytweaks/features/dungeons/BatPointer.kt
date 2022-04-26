@@ -14,9 +14,11 @@ class BatPointer {
     val mc = Minecraft.getMinecraft()
     var closestBat: EntityBat? = null
     fun tick() {
+        if (!SkyTweaksConfig.pointBats) return
         if (Location.currentLocation != Location.THE_CATACOMBS) return
         val world = mc.theWorld
         for (e in world.getEntitiesWithinAABB(EntityBat::class.java, mc.thePlayer.entityBoundingBox.expand(25.0, 10.0, 25.0))) {
+            if (e.isInvisible) return
             closestBat = e
             break
         }
@@ -24,6 +26,7 @@ class BatPointer {
 
     fun render() {
         if (closestBat == null) return
+        if (!SkyTweaksConfig.pointBats) return
         if (!closestBat?.isEntityAlive!!) {
             closestBat = null
             return

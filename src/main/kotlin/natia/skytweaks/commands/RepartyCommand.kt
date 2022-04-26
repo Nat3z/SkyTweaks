@@ -1,5 +1,8 @@
 package natia.skytweaks.commands
 
+import cc.blendingMC.commands.BlendingCommand
+import cc.blendingMC.commands.Command
+import cc.blendingMC.commands.Runner
 import mixin.natia.skytweaks.SkyTweaksConfig
 import natia.skytweaks.utils.AsyncAwait
 import natia.skytweaks.SecretUtils
@@ -10,37 +13,12 @@ import net.minecraft.command.CommandBase
 import net.minecraft.command.CommandException
 import net.minecraft.command.ICommandSender
 
-class RepartyCommand : CommandBase() {
+@Command(name = "srp", alias = ["rp", "reparty"])
+class RepartyCommand : BlendingCommand {
 
     private val mc = Minecraft.getMinecraft()
-    /**
-     * Gets the name of the command
-     */
-    override fun getCommandName(): String {
-        return "rp"
-    }
-
-    override fun getCommandAliases(): List<String> {
-        return listOf("srp")
-    }
-
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender
-     */
-    override fun getCommandUsage(sender: ICommandSender): String {
-        return "/rp"
-    }
-
-    /**
-     * Callback when the command is invoked
-     *
-     * @param sender
-     * @param args
-     */
-    @Throws(CommandException::class)
-    override fun processCommand(sender: ICommandSender, args: Array<String>) {
+    @Runner
+    fun repartyCommand() {
         if (SkyTweaksConfig.rpCommand) {
             SecretUtils.sendMessage("Attempting to reparty party members....")
             RepartyHook.instance.cancelChats = true
@@ -51,6 +29,7 @@ class RepartyCommand : CommandBase() {
                 AsyncAwait.start({
                     var command = "/p invite"
                     SkyTweaks.LOGGER.info("Party Members:")
+                    RepartyHook.instance.partyMembers.remove(mc.thePlayer.name)
                     for (member in RepartyHook.instance.partyMembers) {
                         if (!member.isEmpty()) {
                             SkyTweaks.LOGGER.info("- $member")
@@ -72,9 +51,5 @@ class RepartyCommand : CommandBase() {
             SecretUtils.sendMessage("The feature 'Reparty Command' is not enabled.")
         }
 
-    }
-
-    override fun canCommandSenderUseCommand(sender: ICommandSender): Boolean {
-        return true
     }
 }

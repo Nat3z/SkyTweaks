@@ -1,5 +1,8 @@
 package natia.skytweaks.commands
 
+import cc.blendingMC.commands.BlendingCommand
+import cc.blendingMC.commands.Command
+import cc.blendingMC.commands.Runner
 import natia.skytweaks.utils.FileUtils
 import natia.skytweaks.utils.ItemDiff
 import natia.skytweaks.SecretUtils
@@ -14,32 +17,12 @@ import net.minecraft.util.StringUtils
 import java.io.File
 import java.io.IOException
 
-class SavePickupLog : CommandBase() {
+@Command(name = "savelogs")
+class SavePickupLog : BlendingCommand {
     internal var mc = Minecraft.getMinecraft()
-    /**
-     * Gets the name of the command
-     */
-    override fun getCommandName(): String {
-        return "savelogs"
-    }
 
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender
-     */
-    override fun getCommandUsage(sender: ICommandSender): String {
-        return "/savelogs"
-    }
-
-    /**
-     * Callback when the command is invoked
-     *
-     * @param sender
-     * @param args
-     */
-    @Throws(CommandException::class)
-    override fun processCommand(sender: ICommandSender, args: Array<String>) {
+    @Runner
+    fun logsCommand() {
         val itemLog = arrayOf("**ITEM LOG for HYPIXEL SKYBLOCK provided by Skyblock Secret Mod**")
         SecretUtils.itemPickupLog!!.asMap().forEach { (key, diffs) ->
             for (diff in diffs) {
@@ -59,9 +42,5 @@ class SavePickupLog : CommandBase() {
             e.printStackTrace()
         }
 
-    }
-
-    override fun canCommandSenderUseCommand(sender: ICommandSender): Boolean {
-        return true
     }
 }
