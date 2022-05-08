@@ -106,37 +106,6 @@ object RenderUtils {
     }
 
     /**
-     * Taken from Danker's Skyblock Mod under GNU General Public License v3.0
-     * https://github.com/bowser0000/SkyblockMod/blob/master/LICENSE
-     * @author Danker
-     */
-    fun drawOutlinedHitbox(aabb: AxisAlignedBB, colourInt: Int, partialTicks: Float) {
-        val render = Minecraft.getMinecraft().renderViewEntity
-        val color = Color(colourInt)
-
-        val realX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks
-        val realY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks
-        val realZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks
-
-        GlStateManager.pushMatrix()
-        GlStateManager.translate(-realX, -realY, -realZ)
-        GlStateManager.disableTexture2D()
-        GlStateManager.enableBlend()
-        GlStateManager.disableAlpha()
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-        GL11.glLineWidth(2f)
-
-        RenderGlobal.drawOutlinedBoundingBox(aabb, color.red, color.green, color.blue, color.alpha)
-
-        GlStateManager.translate(realX, realY, realZ)
-        GlStateManager.disableBlend()
-        GlStateManager.enableAlpha()
-        GlStateManager.enableTexture2D()
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
-        GlStateManager.popMatrix()
-    }
-
-    /**
      * @author Mojang
      */
     fun drawLabel(pos: Vec3, text: String, color: Color, partialTicks: Float, shadow: Boolean = false, scale: Float = 1f) {
