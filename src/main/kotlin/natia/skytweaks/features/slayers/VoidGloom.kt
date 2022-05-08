@@ -84,7 +84,6 @@ class VoidGloom {
                                     texture = String(Base64.getDecoder().decode(texture))
                                     if (texture.contains("eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3")) {
                                         yangGlyphsSpawned++
-//                                        RenderUtils.drawOutlinedHitbox(e.entityBoundingBox, SkyTweaksConfig.skullHighlightColor, event.partialTicks)
                                         val vec = Vector3f(e.position.x.toFloat(), e.position.y + 1f, e.position.z.toFloat())
                                         RenderUtils.highlightBlock(vec, 0.5f, event.partialTicks, Color(SkyTweaksConfig.skullHighlightColor))
                                     }
