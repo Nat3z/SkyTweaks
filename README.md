@@ -67,4 +67,4 @@ SkyTweaks is open source and because of this it uses code from open source progr
 
 [List of Open Source Programs](https://github.com/Nat3z/SkyTweaks/blob/main/OPEN_SOURCE_SOFTWARE.md)
 
-This mod is protected by the [**MIT License**](https://github.com/Nat3z/SkyTweaks/blob/main/LICENSE). All rights reserved.
+This mod is protected by the [**GNU Affero General Public License v3.0**](https://github.com/Nat3z/SkyTweaks/blob/main/LICENSE).
